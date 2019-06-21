@@ -24,6 +24,13 @@
 
 from setuptools import setup, find_packages  # Always prefer setuptools over distutils
 import platform
+from os import path
+
+here = path.abspath(path.dirname(__file__))
+
+# get the log description
+with open(path.join(here, "DESCRIPTION.rst"), encoding="utf-8") as f:
+    long_description = f.read()
 
 setup_requires = []
 
@@ -40,7 +47,7 @@ setup(
     version='0.8.6',
 
     description='SparkFun Electronics qwiic I2C library',
-    long_description='Python library to support SparkFun Electronics qwiic I2C communication',
+    long_description=long_description,
 
     # The project's main homepage.
     url='http://www.sparkfun.com/qwiic',
