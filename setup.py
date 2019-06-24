@@ -29,7 +29,7 @@ import io
 
 here = path.abspath(path.dirname(__file__))
 
-# get the log description
+# get the log description from the decription file
 with io.open(path.join(here, "DESCRIPTION.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
