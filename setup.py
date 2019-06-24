@@ -25,11 +25,12 @@
 from setuptools import setup, find_packages  # Always prefer setuptools over distutils
 import platform
 from os import path
+import io
 
 here = path.abspath(path.dirname(__file__))
 
 # get the log description
-with open(path.join(here, "DESCRIPTION.rst"), encoding="utf-8") as f:
+with io.open(path.join(here, "DESCRIPTION.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup_requires = []
