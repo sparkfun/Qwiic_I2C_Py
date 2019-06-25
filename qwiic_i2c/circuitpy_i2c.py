@@ -6,9 +6,6 @@
 #
 # Written by  SparkFun Electronics, May 2019
 # 
-# This python library supports the SparkFun Electroncis qwiic 
-# qwiic sensor/board ecosystem on a Raspberry Pi (and compatable) single
-# board computers. 
 #
 # More information on qwiic is at https://www.sparkfun.com/qwiic
 #
@@ -23,8 +20,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------
 
-#  there is no future with cicuit py
-
+# Import items from __future__ ? 
+#  NO: There is no future with cicuit py
 
 from .i2c_driver import I2CDriver
 
@@ -74,14 +71,10 @@ def _connectToI2CBus():
 	return daBus
 
 
-# notes on determining Linux platform
+# notes on determining CirPy platform
 #
-# - sys.platform == 'linux' or 'linux2', os.uname ->> res.sysname or res[0]=='Linux'
-#	## Means it's a linux system - and we support it
+# - os.uname().sysname == samd*
 #
-# To find out a particular system:
-#
-# 	- Need to start looking at particular hardware classes in /proc/cpuinfo
 # 
 class CircuitPythonI2C(I2CDriver):
 
@@ -98,7 +91,7 @@ class CircuitPythonI2C(I2CDriver):
 
 
 
-	# Okay, are we running on a Linux system?
+	# Okay, are we running on a circuit py system?
 	@classmethod
 	def isPlatform(cls):
 
@@ -134,7 +127,7 @@ class CircuitPythonI2C(I2CDriver):
 		if(name != "i2cbus"):
 			super(I2CDriver, self).__setattr__(name, value)
 
-#-------------------------------------------------------------------------	
+	#----------------------------------------------------------
 	# read Data Command
 
 	def readWord(self, address, commandCode):
@@ -151,7 +144,7 @@ class CircuitPythonI2C(I2CDriver):
 		# build and return a word
 		return (buffer[1] << 8 ) | buffer[0]
 
-
+	#----------------------------------------------------------
 	def readByte(self, address, commandCode):
 
 		if not self.i2cbus.try_lock():
@@ -165,7 +158,7 @@ class CircuitPythonI2C(I2CDriver):
 
 		return buffer
 
-
+	#----------------------------------------------------------
 	def readBlock(self, address, commandCode, nBytes):
 
 		if not self.i2cbus.try_lock():
@@ -195,7 +188,7 @@ class CircuitPythonI2C(I2CDriver):
 
 		self.i2cbus.writeto(address, commandCode, stop=True)
 
-
+	#----------------------------------------------------------
 	def writeWord(self, address, commandCode, value):
 
 
@@ -210,7 +203,7 @@ class CircuitPythonI2C(I2CDriver):
 		self.i2cbus.writeto(address, buffer, stop=True)		
 
 
-
+	#----------------------------------------------------------
 	def writeByte(self, address, commandCode, value):
 
 		if not self.i2cbus.try_lock():
@@ -219,6 +212,7 @@ class CircuitPythonI2C(I2CDriver):
 		self.i2cbus.writeto(address, commandCode, stop=False)
 		self.i2cbus.writeto(address, bytes(value), stop=True)		
 
+	#----------------------------------------------------------
 	def writeBlock(self, address, commandCode, value):
 
 		if not self.i2cbus.try_lock():

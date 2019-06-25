@@ -25,10 +25,8 @@
 #-----------------------------------------------------------------------------
 # Package to abstract the interace to the execution platforms I2C bus for QWIIC.
 #
-#
-#
 #-----------------------------------------------------------------------------
-# utility functions
+# Drivers and driver baseclass
 from .i2c_driver 	import I2CDriver
 from .linux_i2c 	import LinuxI2C
 from .circuitpy_i2c import CircuitPythonI2C
@@ -37,9 +35,10 @@ _drivers = [LinuxI2C, CircuitPythonI2C]
 
 _theDriver = None
 
+#-------------------------------------------------
 # Exported method to get the I2C driver for the execution plaform. 
 #
-# If no driver is found, a None value is returne.d
+# If no driver is found, a None value is returned
 
 def getI2CDriver():
 
@@ -61,6 +60,9 @@ def getI2CDriver():
 
 	return None
 
+#-------------------------------------------------
+# Method to determine if a particular device (at the provided address)
+# is connected to the bus.
 def isDeviceConnected(devAddress):
 
 	i2c = getI2CDriver()

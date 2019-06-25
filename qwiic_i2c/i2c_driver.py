@@ -10,8 +10,7 @@
 #		- Platforms are strucutre into broad classifications. For example
 #			- Linux systems
 #			- CircuitPython 
-#			- MicroPlatform
-
+#
 #	- Implements platform specific logic to support a given operation (I2C for now)
 #
 # This specific class does very little besides define the base interface  
@@ -20,9 +19,6 @@
 #
 # Written by  SparkFun Electronics, May 2019
 # 
-# This python library supports the SparkFun Electroncis qwiic 
-# qwiic sensor/board ecosystem on a Raspberry Pi (and compatable) single
-# board computers. 
 #
 # More information on qwiic is at https://www.sparkfun.com/qwiic
 #
