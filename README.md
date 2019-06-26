@@ -1,4 +1,7 @@
 # Qwiic_I2C_Py
+<p align="center">
+   <img src="https://cdn.sparkfun.com/assets/custom_pages/2/7/2/qwiic-logo-registered.jpg"  width=200>
+</p>
 Python package to support multi platform I2C bus integrations for the SparkFun [qwiic ecosystem](https://www.sparkfun.com/qwiic)
 
 ## Installation
@@ -31,3 +34,7 @@ A package file is built and placed in a subdirectory called dist. This package f
 ```
   cd dist
   pip install sparkfun_qwiic_i2c-<version>.tar.gz
+```
+<p align="center">
+   <img src="https://cdn.sparkfun.com/assets/custom_pages/2/7/2/qwiic-logo-registered.jpg"  width=200>
+</p>
