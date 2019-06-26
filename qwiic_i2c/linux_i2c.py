@@ -168,7 +168,10 @@ class LinuxI2C(I2CDriver):
 
 	def writeBlock(self, address, commandCode, value):
 
-		self.i2cbus.write_i2c_block_data(address, commandCode, value)
+		# if value is a bytearray - convert to list of ints (it's what 
+		# required by this call)
+		tmpVal = list(value) if type(value) == bytearray else value
+		self.i2cbus.write_i2c_block_data(address, commandCode, tmpVal)
 
 	#-----------------------------------------------------------------------
 	# scan()
