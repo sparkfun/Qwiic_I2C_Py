@@ -9,7 +9,7 @@ Qwiic_I2C_Py
 	<a href="https://test.pypi.org/project/sparkfun_qwiic_i2c/" alt="Package">
 		<img src="https://img.shields.io/pypi/pyversions/sparkfun_qwiic_i2c.svg" /></a>
 	<a href="https://github.com/sparkfun/Qwiic_I2C_Py/issues" alt="Issues">
-		<img src="https://img.shields.io/github/issues/sparkfun/Qwiic_I2C_Py/issues.svg" /></a>
+		<img src="https://img.shields.io/github/issues/sparkfun/Qwiic_I2C_Py.svg" /></a>
 	<a href="https://github.com/sparkfun/Qwiic_Proximity_Py/blob/master/LICENSE" alt="License">
 		<img src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
 	<a href="https://twitter.com/intent/follow?screen_name=sparkfun">
