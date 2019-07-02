@@ -32,12 +32,12 @@ On systems that support PyPi installation via pip, this library is installed usi
 
 For all users (note: the user must have sudo privileges):
 ```sh
-sudo pip install sparkfun_qwiic_i2c
+sudo pip install sparkfun-qwiic-i2c
 ```
 For the current user:
 
 ```sh
-pip install sparkfun_qwiic_i2c
+pip install sparkfun-qwiic-i2c
 ```
 ## Local Installation
 To install, make sure the setuptools package is installed on the system.
