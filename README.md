@@ -40,7 +40,7 @@ The Raspberry Pi/Single Board ComputerLinux driver of this package is dependent 
 
 Documentation
 -------------
-The Sparkfun qwiic I2C module documentation is hosted at [ReadTheDocs](https://qwiic-bme280-py.readthedocs.io/en/latest/?)
+The Sparkfun qwiic I2C module documentation is hosted at [ReadTheDocs](https://qwiic-i2c-py.readthedocs.io/en/latest/index.html)
 
 Installation
 ---------------
