@@ -4,5 +4,5 @@ API Reference
 .. automodule:: qwiic_i2c
    :members:
 
-.. autoclass:: I2CDriver
+.. autoclass:: qwiic_i2c.I2CDriver
    :members:
