@@ -79,6 +79,22 @@ Examples
 ---------------
 This package is used extensivly by the python modules for the SparkFun qwiic ecosystem. References to the modules can be found in the [qwiic python package](https://github.com/sparkfun/Qwiic_Py/tree/master/drivers)
 
+General package use examples:
+
+```python
+import qwiic_i2c
+connectedDevices = i2cDriver.scan()
+if myDeviceAddress in connectedDevices:
+	with qwiic_i2c.getI2CDriver() as i2c:
+		i2c.writeByte(myDeviceAddress, register, 0x3F)
+```
+
+```python
+import qwiic_i2c
+>>> if qwiic_i2c.isDeviceConnected(myDeviceAddress):
+        with qwiic_i2c.getI2CDriver() as i2c:
+                i2c.writeByte(myDeviceAddress, register, 0x3F)
+```
 
 <p align="center">
 <img src="https://cdn.sparkfun.com/assets/custom_pages/3/3/4/dark-logo-red-flame.png" alt="SparkFun - Start Something">
