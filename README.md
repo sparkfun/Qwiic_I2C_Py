@@ -22,7 +22,25 @@ Qwiic_I2C_Py
 
 Python package to support multi platform I2C bus integrations for the SparkFun [qwiic ecosystem](https://www.sparkfun.com/qwiic)
 
+This package can be used in conjunction with the overall [SparkFun qwiic Python Package](https://github.com/sparkfun/Qwiic_Py)
+
 New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.sparkfun.com/qwiic).
+
+## Contents
+
+* [Dependencies](#dependencies)
+* [Documentation](#documentation)
+* [Installation](#installation)
+
+
+Dependencies 
+---------------
+The Raspberry Pi/Single Board ComputerLinux driver of this package is dependent on 
+[smbus](https://pypi.org/project/smbus/)
+
+Documentation
+-------------
+The Sparkfun qwiic I2C module documentation is hosted at [ReadTheDocs](https://qwiic-bme280-py.readthedocs.io/en/latest/?)
 
 Installation
 ---------------
@@ -56,6 +74,11 @@ A package file is built and placed in a subdirectory called dist. This package f
 cd dist
 pip install sparkfun_qwiic_i2c-<version>.tar.gz
 ```
+
+Examples
+---------------
+This package is used extensivly by the python modules for the SparkFun qwiic ecosystem. References to the modules can be found in the [qwiic python package](https://github.com/sparkfun/Qwiic_Py/tree/master/drivers)
+
 
 <p align="center">
 <img src="https://cdn.sparkfun.com/assets/custom_pages/3/3/4/dark-logo-red-flame.png" alt="SparkFun - Start Something">
