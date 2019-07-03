@@ -23,6 +23,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #-----------------------------------------------------------------------------
+"""
+qwiic_i2c
+=========
+
+A package to abstract the interface to the platform specific I2C bus calls. 
+This package is part of the python package for SparkFun qwiic ecosystem. 
+
+New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.sparkfun.com/qwiic).
+
+:example:
+
+	>>> import qwiic_i2c
+	>>> connectedDevices = i2cDriver.scan()
+	>>> if myDeviceAddress in connectedDevices:
+		with qwiic_i2c.getI2CDriver() as i2c:
+			i2c.writeByte(myDeviceAddress, register, 0x3F)
+
+:example:
+	>>> import qwiic_i2c
+	>>> if qwiic_i2c.isDeviceConnected(myDeviceAddress):
+		with qwiic_i2c.getI2CDriver() as i2c:
+			i2c.writeByte(myDeviceAddress, register, 0x3F)
+"""
 # Package to abstract the interace to the execution platforms I2C bus for QWIIC.
 #
 #-----------------------------------------------------------------------------
@@ -41,6 +64,20 @@ _theDriver = None
 # If no driver is found, a None value is returned
 
 def getI2CDriver():
+	"""
+	.. function:: getI2CDriver()
+
+		Returns the qwiic I2C driver object for current platform.
+
+		:return: A qwiic I2C driver object for the current platform.
+		:rtype: object
+
+		:example:
+
+		>>> import qwiic_i2c
+		>>> i2cDriver = qwiic_i2c.getI2CDriver()
+		>>> myData = i2cDriver.readByte(0x73, 0x34)
+	"""
 
 	global _theDriver
 
@@ -64,7 +101,18 @@ def getI2CDriver():
 # Method to determine if a particular device (at the provided address)
 # is connected to the bus.
 def isDeviceConnected(devAddress):
+	"""
+	.. function:: isDeviceConnected()
 
+		Function to determine if a particular device (at the provided address)
+		is connected to the bus.
+
+		:param devAddress: The I2C address of the device to check
+
+		:return: True if the device is connected, otherwise False.
+		:rtype: bool
+
+	"""
 	i2c = getI2CDriver()
 
 	if not i2c:
