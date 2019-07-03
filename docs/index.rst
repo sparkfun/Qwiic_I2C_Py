@@ -26,7 +26,7 @@ Table of Contents
 
 	SparkFun <https://sparkfun.com>
 	SparkFun qwiic <https://www.sparkfun.com/qwiic>
-   SparkFun qwiic python package <https://github.com/sparkfun/Qwiic_Py>
+   	SparkFun qwiic python package <https://github.com/sparkfun/Qwiic_Py>
 
 	
 Indices and tables
