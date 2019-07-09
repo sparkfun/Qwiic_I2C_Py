@@ -37,12 +37,12 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 
 Dependencies 
 ---------------
-The Raspberry Pi/Single Board ComputerLinux driver of this package is dependent on 
+The Raspberry Pi/Single Board Computer Linux driver of this package is dependent on 
 [smbus](https://pypi.org/project/smbus/)
 
 Documentation
 -------------
-The Sparkfun qwiic I2C module documentation is hosted at [ReadTheDocs](https://qwiic-i2c-py.readthedocs.io/en/latest/index.html)
+The SparkFun qwiic I2C module documentation is hosted at [ReadTheDocs](https://qwiic-i2c-py.readthedocs.io/en/latest/index.html)
 
 Installation
 ---------------
@@ -79,7 +79,7 @@ pip install sparkfun_qwiic_i2c-<version>.tar.gz
 
 Examples
 ---------------
-This package is used extensivly by the python modules for the SparkFun qwiic ecosystem. References to the modules can be found in the [qwiic python package](https://github.com/sparkfun/Qwiic_Py/tree/master/drivers)
+This package is used extensively by the python modules for the SparkFun qwiic ecosystem. References to the modules can be found in the [qwiic python package](https://github.com/sparkfun/Qwiic_Py/tree/master/drivers)
 
 General package use examples:
 
