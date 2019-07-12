@@ -45,6 +45,7 @@ import sys
 
 _PLATFORM_NAME = "Linux"
 
+_retry_count = 3
 #-----------------------------------------------------------------------------
 # Internal function to connect to the systems I2C bus.
 #
@@ -148,15 +149,46 @@ class LinuxI2C(I2CDriver):
 
 	def readWord(self, address, commandCode):
 
-		return self.i2cbus.read_word_data(address, commandCode)		
+		data = 0
 
+		# add some error handling and recovery....
+		for i in range(_retry_count):
+			try:
+				data = self.i2cbus.read_word_data(address, commandCode)		
+			except IOError as ioErr:
+				# we had an error - let's try again
+				if i == _retry_count-1:
+					raise ioErr
+				pass
+
+		return data
 
 	def readByte(self, address, commandCode):
-		return self.i2cbus.read_byte_data(address, commandCode)				
+		data = 0
+		for i in range(_retry_count):
+			try:
+				data = self.i2cbus.read_byte_data(address, commandCode)		
+			except IOError as ioErr:
+				# we had an error - let's try again
+				if i == _retry_count-1:
+					raise ioErr
+				pass
+
+		return data
+
 
 	def readBlock(self, address, commandCode, nBytes):
-		return self.i2cbus.read_i2c_block_data(address, commandCode, nBytes)
+		data = 0
+		for i in range(_retry_count):
+			try:
+				data = self.i2cbus.read_i2c_block_data(address, commandCode, nBytes)
+			except IOError as ioErr:
+				# we had an error - let's try again
+				if i == _retry_count-1:
+					raise ioErr
+				pass
 
+		return data
 		
 	#--------------------------------------------------------------------------	
 	# write Data Commands 
