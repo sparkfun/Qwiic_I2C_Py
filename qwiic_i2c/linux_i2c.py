@@ -55,7 +55,7 @@ _retry_count = 3
 def _connectToI2CBus():
 
 	try:
-		import smbus
+		import smbus2
 	except Exception as ee:
 		print("Error: Unable to load smbus module. Unable to continue", file=sys.stderr)
 		return None
@@ -68,7 +68,7 @@ def _connectToI2CBus():
 	# Connect - catch errors 
 
 	try:
-		daBus =  smbus.SMBus(iBus)
+		daBus =  smbus2.SMBus(iBus)
 	except Exception as ee:
 		if(type(ee) is IOError and ee.errno == 13):
 			print("Error:\tUnable to connect to I2C bus %d: Permission denied.\n\tVerify you have permissoin to access the I2C bus" % (iBus), file=sys.stderr)

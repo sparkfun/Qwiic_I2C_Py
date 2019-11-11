@@ -48,7 +48,7 @@ with io.open(path.join(here, "DESCRIPTION.rst"), encoding="utf-8") as f:
 setup_requires = []
 
 if platform.system() == 'Linux':
-    setup_requires.append("smbus")
+    setup_requires.append("smbus2")
 
 setup(
 
@@ -57,7 +57,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # http://packaging.python.org/en/latest/tutorial.html#version
-    version='0.8.4',
+    version='0.9.4',
 
     description='SparkFun Electronics qwiic I2C library',
     long_description=long_description,
