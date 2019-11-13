@@ -95,11 +95,13 @@ def _connectToI2CBus():
 # 	- Need to start looking at particular hardware classes in /proc/cpuinfo
 # 
 class LinuxI2C(I2CDriver):
+	global _i2c_msg
 
 	# Constructor
 	name = _PLATFORM_NAME
 
 	_i2cbus = None
+	_i2c_msg = None
 
 	def __init__(self):
 
@@ -250,4 +252,39 @@ class LinuxI2C(I2CDriver):
 	
 		return foundDevices
 
+	#-----------------------------------------------------------------------
+	# Custom method for reading +8-bit register using `i2c_msg` from `smbus2`
+	#
+	def __i2c_rdwr(self, address, write_message, read_nbytes):
+		"""
+		Custom method used for 16-bit (or greater) register reads
+		:param address: 7-bit address
+		:param write_message: list with register(s) to read
+		:param read_nbytes: number of bytes to be read
 
+		:return: response of read transaction
+		:rtype: list
+		"""
+		global _i2c_msg
+		
+		# Loads i2c_msg if not previously loaded
+		if _i2c_msg == None:
+			from smbus2 import i2c_msg
+			_i2c_msg = i2c_msg
+        
+		# Sets up write and read transactions for reading a register
+		write = _i2c_msg.write(address, write_message)
+		read = _i2c_msg.read(address, read_nbytes)
+
+		# Read Register
+		for i in range(_retry_count):
+			try:
+				self.i2cbus.i2c_rdwr(write, read) 
+			except IOError as ioErr:
+				# we had an error - let's try again
+				if i == _retry_count-1:
+					raise ioErr
+				pass
+		
+		# Return read transaction (list)
+		return read
