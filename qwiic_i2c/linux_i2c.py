@@ -255,7 +255,7 @@ class LinuxI2C(I2CDriver):
 	#-----------------------------------------------------------------------
 	# Custom method for reading +8-bit register using `i2c_msg` from `smbus2`
 	#
-	def __i2c_rdwr(self, address, write_message, read_nbytes):
+	def __i2c_rdwr__(self, address, write_message, read_nbytes):
 		"""
 		Custom method used for 16-bit (or greater) register reads
 		:param address: 7-bit address
