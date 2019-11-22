@@ -158,7 +158,7 @@ class LinuxI2C(I2CDriver):
 			try:
 				data = self.i2cbus.read_word_data(address, commandCode)
 			
-			break # break if try succeeds
+				break # break if try succeeds
 
 			except IOError as ioErr:
 				# we had an error - let's try again
@@ -174,7 +174,7 @@ class LinuxI2C(I2CDriver):
 			try:
 				data = self.i2cbus.read_byte_data(address, commandCode)
 			
-			break # break if try succeeds
+				break # break if try succeeds
 
 			except IOError as ioErr:
 				# we had an error - let's try again
@@ -191,7 +191,7 @@ class LinuxI2C(I2CDriver):
 			try:
 				data = self.i2cbus.read_i2c_block_data(address, commandCode, nBytes)
 			
-			break # break if try succeeds
+				break # break if try succeeds
 
 			except IOError as ioErr:
 				# we had an error - let's try again
@@ -290,7 +290,7 @@ class LinuxI2C(I2CDriver):
 			try:
 				self.i2cbus.i2c_rdwr(write, read)
 			
-			break # break if try succeeds
+				break # break if try succeeds
 
 			except IOError as ioErr:
 				# we had an error - let's try again
