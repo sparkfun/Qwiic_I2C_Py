@@ -156,7 +156,10 @@ class LinuxI2C(I2CDriver):
 		# add some error handling and recovery....
 		for i in range(_retry_count):
 			try:
-				data = self.i2cbus.read_word_data(address, commandCode)		
+				data = self.i2cbus.read_word_data(address, commandCode)
+			
+			break # break if try succeeds
+
 			except IOError as ioErr:
 				# we had an error - let's try again
 				if i == _retry_count-1:
@@ -169,7 +172,10 @@ class LinuxI2C(I2CDriver):
 		data = 0
 		for i in range(_retry_count):
 			try:
-				data = self.i2cbus.read_byte_data(address, commandCode)		
+				data = self.i2cbus.read_byte_data(address, commandCode)
+			
+			break # break if try succeeds
+
 			except IOError as ioErr:
 				# we had an error - let's try again
 				if i == _retry_count-1:
@@ -184,6 +190,9 @@ class LinuxI2C(I2CDriver):
 		for i in range(_retry_count):
 			try:
 				data = self.i2cbus.read_i2c_block_data(address, commandCode, nBytes)
+			
+			break # break if try succeeds
+
 			except IOError as ioErr:
 				# we had an error - let's try again
 				if i == _retry_count-1:
@@ -279,7 +288,10 @@ class LinuxI2C(I2CDriver):
 		# Read Register
 		for i in range(_retry_count):
 			try:
-				self.i2cbus.i2c_rdwr(write, read) 
+				self.i2cbus.i2c_rdwr(write, read)
+			
+			break # break if try succeeds
+
 			except IOError as ioErr:
 				# we had an error - let's try again
 				if i == _retry_count-1:
