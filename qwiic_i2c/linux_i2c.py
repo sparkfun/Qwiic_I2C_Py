@@ -168,11 +168,14 @@ class LinuxI2C(I2CDriver):
 
 		return data
 
-	def readByte(self, address, commandCode):
+	def readByte(self, address, commandCode = None):
 		data = 0
 		for i in range(_retry_count):
 			try:
-				data = self.i2cbus.read_byte_data(address, commandCode)
+				if commandCode == None:
+					data = self.i2cbus.read_byte(address)
+				elif commandCode != None:
+					data = self.i2cbus.read_byte_data(address, commandCode)
 			
 				break # break if try succeeds
 
