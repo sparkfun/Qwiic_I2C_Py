@@ -46,9 +46,7 @@ with io.open(path.join(here, "DESCRIPTION.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup_requires = []
-
-if platform.system() == 'Linux':
-    setup_requires.append("smbus2")
+setup_requires.append("smbus2")
 
 setup(
 
