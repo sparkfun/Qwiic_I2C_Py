@@ -46,6 +46,9 @@ import sys
 _PLATFORM_NAME = "Linux"
 
 _retry_count = 3
+
+iBus = 1
+
 #-----------------------------------------------------------------------------
 # Internal function to connect to the systems I2C bus.
 #
@@ -53,14 +56,13 @@ _retry_count = 3
 # bus. Users of this system should be added to the system i2c group
 #
 def _connectToI2CBus():
-
+	global iBus
 	try:
 		import smbus2
 	except Exception as ee:
 		print("Error: Unable to load smbus module. Unable to continue", file=sys.stderr)
 		return None
 
-	iBus = 1
 	daBus = None
 
 	error=False
