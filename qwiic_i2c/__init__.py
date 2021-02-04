@@ -66,8 +66,9 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 from .i2c_driver 	import I2CDriver
 from .linux_i2c 	import LinuxI2C
 from .circuitpy_i2c import CircuitPythonI2C
+from .micropython_rp2040_i2c import MicroPythonRP2040I2C
 
-_drivers = [LinuxI2C, CircuitPythonI2C]
+_drivers = [LinuxI2C, CircuitPythonI2C, MicroPythonRP2040I2C]
 
 _theDriver = None
 
