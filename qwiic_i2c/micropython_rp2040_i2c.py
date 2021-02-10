@@ -42,10 +42,11 @@ import os
 _PLATFORM_NAME = "RP2040 MicroPython"
 
 # used internally in this file to get i2c class object 
-def _connectToI2CBus(id, freq=400000):
+def _connectToI2CBus(freq=400000):
 	try:
+		import board
 		from machine import I2C
-		return I2C(id=id, freq=freq)
+		return I2C(id=board.qwiic_id, scl=board.qwiic_scl, sda=board.qwiic_sda, freq=freq)
 	except Exception as e:
 		print(str(e))
 		print('error: failed to connect to i2c bus')
@@ -56,7 +57,6 @@ class MicroPythonRP2040I2C(I2CDriver):
 	# Constructor
 	name = _PLATFORM_NAME
 	_i2cbus = None
-	_i2c_port_id = 0
 
 	def __init__(self):
 		I2CDriver.__init__(self) # init super
@@ -76,7 +76,7 @@ class MicroPythonRP2040I2C(I2CDriver):
 
 		if(name == "i2cbus"):
 			if( self._i2cbus == None):
-				self._i2cbus = _connectToI2CBus(self._i2c_port_id)
+				self._i2cbus = _connectToI2CBus()
 			return self._i2cbus
 
 		else:
@@ -91,48 +91,48 @@ class MicroPythonRP2040I2C(I2CDriver):
 	#
 	def __setattr__(self, name, value):
 
-		if(name != "i2cbus"):
+		if(name != 'i2cbus'):
 			super(I2CDriver, self).__setattr__(name, value)
 
 	# read commands ----------------------------------------------------------
 	def readWord(self, address, commandCode):
 		buffer = bytearray(2)
-		self.i2cbus.writeto(address, commandCode, False)
+		self.i2cbus.writeto(address, bytes([commandCode]), False)
 		self.i2cbus.readfrom_into(address, buffer)
 		return (buffer[1] << 8 ) | buffer[0]
 
 	def readByte(self, address, commandCode):
 		buffer = bytearray(1)
-		self.i2cbus.writeto(address, commandCode, False)
+		self.i2cbus.writeto(address, bytes([commandCode]), False)
 		self.i2cbus.readfrom_into(address, buffer)
-		return buffer
+		return buffer[0]
 
 	def readBlock(self, address, commandCode, nBytes):
 		buffer = bytearray(nBytes)
-		self.i2cbus.writeto(address, commandCode, False)
+		self.i2cbus.writeto(address, bytes([commandCode]), False)
 		self.i2cbus.readfrom_into(address, buffer)
 		return buffer
 
 		
 	# write commands----------------------------------------------------------
 	def writeCommand(self, address, commandCode):
-		self.i2cbus.writeto(address, commandCode)
+		self.i2cbus.writeto(address, bytes([commandCode]))
 
 	def writeWord(self, address, commandCode, value):
 		buffer = bytearray(2)
 		buffer[0] = value & 0xFF
 		buffer[1] = (value >> 8) & 0xFF
-		self.i2cbus.writeto(address, commandCode, False)
-		self.i2cbus.writeto(address, buffer)		
+		self.i2cbus.writeto(address, bytes([commandCode]), False)
+		self.i2cbus.writeto(address, bytes(buffer))		
 
 	def writeByte(self, address, commandCode, value):
-		self.i2cbus.writeto(address, commandCode, False)
-		self.i2cbus.writeto(address, bytes(value))		
+		self.i2cbus.writeto(address, bytes([commandCode]), False)
+		self.i2cbus.writeto(address, bytes([value]))		
 
 	def writeBlock(self, address, commandCode, value):
-		data = [value] if isinstance(value, list) else value
-		self.i2cbus.writeto(address, commandCode, False)
-		self.i2cbus.writeto(address, data)
+		data = [value] if not isinstance(value, list) else value
+		self.i2cbus.writeto(address, bytes([commandCode]), False)
+		self.i2cbus.writeto(address, bytes(data))
 
 
 	# scan -------------------------------------------------------------------
@@ -141,7 +141,7 @@ class MicroPythonRP2040I2C(I2CDriver):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
 	
 		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus(cls._i2c_port_id)
+			cls._i2cbus = _connectToI2CBus()
 	
 		if cls._i2cbus == None:
 			return []
