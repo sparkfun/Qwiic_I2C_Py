@@ -123,16 +123,15 @@ class MicroPythonRP2040I2C(I2CDriver):
 		buffer[0] = value & 0xFF
 		buffer[1] = (value >> 8) & 0xFF
 		self.i2cbus.writeto(address, bytes([commandCode]), False)
-		self.i2cbus.writeto(address, bytes(buffer))		
+		self.i2cbus.write(address, bytes(buffer))
 
 	def writeByte(self, address, commandCode, value):
-		self.i2cbus.writeto(address, bytes([commandCode]), False)
-		self.i2cbus.writeto(address, bytes([value]))		
+		self.i2cbus.writeto(address, bytes([commandCode, value]))
 
 	def writeBlock(self, address, commandCode, value):
 		data = [value] if not isinstance(value, list) else value
 		self.i2cbus.writeto(address, bytes([commandCode]), False)
-		self.i2cbus.writeto(address, bytes(data))
+		self.i2cbus.write(bytes(data))
 
 
 	# scan -------------------------------------------------------------------
