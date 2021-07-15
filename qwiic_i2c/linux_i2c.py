@@ -302,4 +302,5 @@ class LinuxI2C(I2CDriver):
 				pass
 		
 		# Return read transaction (list)
+		# Note - To retreive values, list the return: list(read)
 		return read
