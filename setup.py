@@ -54,7 +54,7 @@ setup(
     version='0.9.11',
 
     description='SparkFun Electronics qwiic I2C library',
-    long_description='This package provdes support cross platform I2C support for the qwiic python packages',
+    long_description='This package provides cross platform I2C support for the qwiic python packages',
 
     # The project's main homepage.
     url='http://www.sparkfun.com/qwiic',
