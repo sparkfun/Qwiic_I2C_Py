@@ -52,7 +52,7 @@ _retry_count = 3
 # Attempts to fail elegantly - often an issue with permissions with the I2C 
 # bus. Users of this system should be added to the system i2c group
 #
-def _connectToI2CBus():
+def _connectToI2CBus(iBus = 1):
 
 	try:
 		import smbus2
@@ -60,7 +60,6 @@ def _connectToI2CBus():
 		print("Error: Unable to load smbus module. Unable to continue", file=sys.stderr)
 		return None
 
-	iBus = 1
 	daBus = None
 
 	error=False
@@ -124,11 +123,11 @@ class LinuxI2C(I2CDriver):
 	# Used to intercept getting the I2C bus object - so we can perform a lazy
 	# connect ....
 	#
-	def __getattr__(self, name):
+	def __getattr__(self, name, iBus = 1):
 
 		if(name == "i2cbus"):
 			if( self._i2cbus == None):
-				self._i2cbus = _connectToI2CBus()
+				self._i2cbus = _connectToI2CBus(iBus)
 			return self._i2cbus
 
 		else:
@@ -238,14 +237,14 @@ class LinuxI2C(I2CDriver):
 	# Scans the I2C bus and returns a list of addresses that have a devices connected
 	#
 	@classmethod
-	def scan(cls):
+	def scan(cls, iBus = 1):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
 	
 		# The plan - loop through the I2C address space and read a byte. If an 
 		# OSError occures, a device isn't at that address. 
 	
 		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus()
+			cls._i2cbus = _connectToI2CBus(iBus)
 	
 		if cls._i2cbus == None:
 			return []
