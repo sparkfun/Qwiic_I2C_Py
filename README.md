@@ -88,6 +88,10 @@ Examples
 ---------------
 This package is used extensively by the python modules for the SparkFun qwiic ecosystem. References to the modules can be found in the [qwiic python package](https://github.com/sparkfun/Qwiic_Py/tree/master/drivers)
 
+> :warning: In Linux environments, the default I2C Bus used is
+i2c1. This may be overriden by exporting the environment variable
+`QWIIC_I2C_BUS` to point to the correct I2C Bus.
+
 General package use examples:
 
 ```python

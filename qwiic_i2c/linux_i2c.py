@@ -41,6 +41,7 @@ from __future__ import print_function
 from .i2c_driver import I2CDriver
 
 import sys
+import os
 
 
 _PLATFORM_NAME = "Linux"
@@ -60,7 +61,7 @@ def _connectToI2CBus():
 		print("Error: Unable to load smbus module. Unable to continue", file=sys.stderr)
 		return None
 
-	iBus = 1
+	iBus = int(os.environ.get('QWIIC_I2C_BUS', 1))
 	daBus = None
 
 	error=False
