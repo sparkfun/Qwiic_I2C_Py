@@ -59,7 +59,7 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 
 """
 
-from __future__ import print_function
+#from __future__ import print_function
 
 
 #-----------------------------------------------------------------------------

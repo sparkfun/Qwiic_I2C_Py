@@ -67,7 +67,8 @@ def _connectToI2CBus():
 	# Connect - catch errors 
 
 	try:
-		daBus =  busio.I2C(board.SCL, board.SDA)
+		daBus =  board.STEMMA_I2C()
+        #daBus = busio.I2C(board.STEMMA_I2C())
 	except Exception as ee:
 		if type(ee) is RuntimeError:
 			print("Error:\tUnable to connect to I2C bus. %s" % (ee))
@@ -110,7 +111,7 @@ class CircuitPythonI2C(I2CDriver):
 	def isPlatform(cls):
 
 		# circuit py is mostly - for our purposes - on the samd21 or samd51 based boards
-		return os.uname().sysname in ('samd21', 'samd51')
+		return os.uname().sysname in ('samd21', 'samd51','ESP32S3')
 
 
 #-------------------------------------------------------------------------		
@@ -146,46 +147,57 @@ class CircuitPythonI2C(I2CDriver):
 
 	def readWord(self, address, commandCode):
 
-		if not self.i2cbus.try_lock():
-			return None
+		while not self.i2cbus.try_lock():
+			pass
 
-		self.i2cbus.writeto(address, commandCode, stop=False)
+		try:
 
-		buffer = bytearray(2)
+			self.i2cbus.writeto(address, bytes([commandCode]))
 
-		self.i2cbus.readfrom_into(address, buffer)
+			buffer = bytearray(2)
 
-		# build and return a word
-		return (buffer[1] << 8 ) | buffer[0]
+			self.i2cbus.readfrom_into(address, buffer)
+
+			# build and return a word
+			return (buffer[1] << 8 ) | buffer[0]
+
+		finally:
+			self.i2c.unlock()
 
 	#----------------------------------------------------------
 	def readByte(self, address, commandCode):
+		while not self.i2cbus.try_lock():
+			pass
+		
+		try:
+			self.i2cbus.writeto(address, bytes([commandCode]))
 
-		if not self.i2cbus.try_lock():
-			return None
+			buffer = bytearray(1)
 
-		self.i2cbus.writeto(address, commandCode, stop=False)
+			self.i2cbus.readfrom_into(address, buffer)
 
-		buffer = bytearray(1)
-
-		self.i2cbus.readfrom_into(address, buffer)
-
-		return buffer
+			return buffer
+		
+		finally:
+			self.i2cbus.unlock()
 
 	#----------------------------------------------------------
 	def readBlock(self, address, commandCode, nBytes):
 
-		if not self.i2cbus.try_lock():
-			return None
+		while not self.i2cbus.try_lock():
+			pass
 
-		self.i2cbus.writeto(address, commandCode, stop=False)
+		try:
+			self.i2cbus.writeto(address, bytes([commandCode]))
 
-		buffer = bytearray(nBytes)
+			buffer = bytearray(nBytes)
 
-		self.i2cbus.readfrom_into(address, buffer)
+			self.i2cbus.readfrom_into(address, buffer)
 
-		return buffer
+			return buffer
 
+		finally:
+			self.i2cbus.unlock()
 		
 	#--------------------------------------------------------------------------	
 	# write Data Commands 
@@ -197,46 +209,65 @@ class CircuitPythonI2C(I2CDriver):
 
 	def writeCommand(self, address, commandCode):
 
-		if not self.i2cbus.try_lock():
-			return None
+		while not self.i2cbus.try_lock():
+			pass
 
-		self.i2cbus.writeto(address, commandCode, stop=True)
+		try:
+			self.i2cbus.writeto(address, bytes([commandCode]))
+
+		finally:
+			self._i2cbus.unlock()
+
+
 
 	#----------------------------------------------------------
 	def writeWord(self, address, commandCode, value):
 
 
-		if not self.i2cbus.try_lock():
-			return None
+		while not self.i2cbus.try_lock():
+			pass
 
-		self.i2cbus.writeto(address, commandCode, stop=False)
-		buffer = bytearray(2)
-		buffer[0] = value & 0xFF
-		buffer[1] = (value >> 8) & 0xFF
+		try:
 
-		self.i2cbus.writeto(address, buffer, stop=True)		
+			self.i2cbus.writeto(address, bytes([commandCode]))
+			buffer = bytearray(2)
+			buffer[0] = value & 0xFF
+			buffer[1] = (value >> 8) & 0xFF
+
+			self.i2cbus.writeto(address, buffer)
+
+		finally:
+			self.i2cbus.unlock()		
 
 
 	#----------------------------------------------------------
 	def writeByte(self, address, commandCode, value):
 
-		if not self.i2cbus.try_lock():
-			return None
+		while not self.i2cbus.try_lock():
+			pass
+		
+		try:
+			self.i2cbus.writeto(address, bytes([commandCode, value])) 
 
-		self.i2cbus.writeto(address, commandCode, stop=False)
-		self.i2cbus.writeto(address, bytes(value), stop=True)		
+		finally:
+			self.i2cbus.unlock()
+
 
 	#----------------------------------------------------------
 	def writeBlock(self, address, commandCode, value):
 
-		if not self.i2cbus.try_lock():
-			return None
+		while not self.i2cbus.try_lock():
+			pass
 
-		self.i2cbus.writeto(address, commandCode, stop=False)
+		try:
+			self.i2cbus.writeto(address, bytes([commandCode]))
 
-		data = [value] if isinstance(value, list) else value
+			data = [value] if isinstance(value, list) else value
 
-		self.i2cbus.writeto(address, data, stop=True)
+			self.i2cbus.writeto(address, bytes([data]))
+
+		finally:
+			self.i2cbus.unlock()
 
 
 	#-----------------------------------------------------------------------
@@ -255,9 +286,18 @@ class CircuitPythonI2C(I2CDriver):
 	
 		if cls._i2cbus == None:
 			return []
-	
+
 		if cls._i2cbus.try_lock():
-			return cls._i2cbus.scan()
+			try:
+				return cls._i2cbus.scan()
+			finally:
+				cls._i2cbus.unlock()
+		# while not cls._i2cbus.try_lock():
+		# 	pass
+		# try:
+		# 	return cls._i2cbus.scan()
+		# finally:
+		# 	cls._i2cbus.unlock()
 		else:
 			return []
 
