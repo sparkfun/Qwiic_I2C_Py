@@ -63,21 +63,34 @@ def _connectToI2CBus():
 	daBus = None
 
 	error=False
-
+	msg_a = ""
+	msg_b = ""
+	msg_c = ""
 	# Connect - catch errors 
 
-	try:
-		daBus =  board.STEMMA_I2C()
-        #daBus = busio.I2C(board.STEMMA_I2C())
-	except Exception as ee:
-		if type(ee) is RuntimeError:
-			print("Error:\tUnable to connect to I2C bus. %s" % (ee))
-			print("\t\tEnsure a board is connected to the %s board." % (os.uname().machine))			
-		else:
-			print("Error:\tFailed to connect to I2C bus. Error: %s" % (ee))
 
+	try:
+		daBus =  busio.I2C(board.SCL, board.SDA)
+	except Exception:
+		if type(Exception) is RuntimeError:
+			msg_a = "Error:\tUnable to connect to I2C bus. %s" % (Exception)
+			msg_b = "\t\tEnsure a board is connected to the %s board." % (os.uname().machine)		
+		else:
+			msg_c = "Error:\tFailed to connect to I2C bus. Error: %s" % (Exception)
 		# We had an error.... 
 		error=True
+
+	#If the first way connecting to I2C doesnt work, try this alternate way before printing exceptions
+	if error == True:
+		try:
+			daBus = board.STEMMA_I2C()
+			error = False
+		except:
+			if type(Exception) is RuntimeError:
+				print(msg_a)
+				print(msg_b)
+			else:
+				print(msg_c)
 
 	# below is probably not needed, but ...
 	if(not error and daBus == None):
