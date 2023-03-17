@@ -1,6 +1,10 @@
 Qwiic_I2C_Py
 ==============
 
+
+This is a fork of the main Qwiic_I2C_Py Repo. It has been updated to work with the current CircuitPython Version (7.3.3) and support for the ESP32-S3 has been added.
+Currently only ReadByte and WriteByte have been fully tested.
+
 <p align="center">
    <img src="https://cdn.sparkfun.com/assets/custom_pages/2/7/2/qwiic-logo-registered.jpg"  width=200>  
    <img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png"  width=240>   
