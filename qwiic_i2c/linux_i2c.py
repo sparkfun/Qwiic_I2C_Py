@@ -45,6 +45,8 @@ import sys
 
 _PLATFORM_NAME = "Linux"
 
+iBus = 5 #Sets the I2C Instance we want to use. I2C-5 for QWIIC in the case of BeaglePlay
+
 _retry_count = 3
 #-----------------------------------------------------------------------------
 # Internal function to connect to the systems I2C bus.
@@ -52,7 +54,7 @@ _retry_count = 3
 # Attempts to fail elegantly - often an issue with permissions with the I2C 
 # bus. Users of this system should be added to the system i2c group
 #
-def _connectToI2CBus(iBus = 1):
+def _connectToI2CBus(iBus):
 
 	try:
 		import smbus2
@@ -123,7 +125,7 @@ class LinuxI2C(I2CDriver):
 	# Used to intercept getting the I2C bus object - so we can perform a lazy
 	# connect ....
 	#
-	def __getattr__(self, name, iBus = 1):
+	def __getattr__(self, name):
 
 		if(name == "i2cbus"):
 			if( self._i2cbus == None):
@@ -237,7 +239,7 @@ class LinuxI2C(I2CDriver):
 	# Scans the I2C bus and returns a list of addresses that have a devices connected
 	#
 	@classmethod
-	def scan(cls, iBus = 1):
+	def scan(cls, iBus):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
 	
 		# The plan - loop through the I2C address space and read a byte. If an 
