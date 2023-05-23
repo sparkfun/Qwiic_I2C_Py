@@ -86,7 +86,7 @@ pip install sparkfun_qwiic_i2c-<version>.tar.gz
 
 Examples
 ---------------
-This package is used extensively by the python modules for the SparkFun qwiic ecosystem. References to the modules can be found in the [qwiic python package](https://github.com/sparkfun/Qwiic_Py/tree/master/drivers)
+This package is used extensively by the python modules for the SparkFun qwiic ecosystem. References to the modules can be found in the [qwiic python package](https://github.com/sparkfun/Qwiic_Py/tree/main/qwiic/drivers)
 
 General package use examples:
 
