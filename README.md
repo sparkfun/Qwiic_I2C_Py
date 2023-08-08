@@ -38,7 +38,7 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 Supported Platforms
 --------------------
 The qwiic I2C Python package current supports the following platforms:
-* [Raspberry Pi](https://www.sparkfun.com/search/results?term=raspberry+pi)
+* [Raspberry Pi](https://www.sparkfun.com/search/results?term=raspberry+pi) (Single Board Computers)
 * [NVidia Jetson Nano](https://www.sparkfun.com/products/15297)
 * [Google Coral Development Board](https://www.sparkfun.com/products/15318)
 
