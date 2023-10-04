@@ -64,11 +64,26 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 #-----------------------------------------------------------------------------
 # Drivers and driver baseclass
 from .i2c_driver 	import I2CDriver
-from .linux_i2c 	import LinuxI2C
-from .circuitpy_i2c import CircuitPythonI2C
-from .micropython_rp2040_i2c import MicroPythonRP2040I2C
 
-_drivers = [LinuxI2C, CircuitPythonI2C, MicroPythonRP2040I2C]
+_drivers = []
+
+try:
+	from .linux_i2c import LinuxI2C
+	_drivers.append(LinuxI2C)
+except:
+	pass
+
+try:
+	from .circuitpy_i2c import CircuitPythonI2C
+	_drivers.append(CircuitPythonI2C)
+except:
+	pass
+
+try:
+	from .micropython_i2c import MicroPythonI2C
+	_drivers.append(MicroPythonI2C)
+except:
+	pass
 
 _theDriver = None
 
