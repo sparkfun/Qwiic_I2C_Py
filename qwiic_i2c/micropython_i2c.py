@@ -36,23 +36,21 @@
 from .i2c_driver import I2CDriver
 
 import sys
-import os
 
-
-_PLATFORM_NAME = "RP2040 MicroPython"
+_PLATFORM_NAME = "MicroPython"
 
 # used internally in this file to get i2c class object 
 def _connectToI2CBus(freq=400000):
 	try:
-		import board
-		from machine import I2C
-		return I2C(id=board.qwiic_id, scl=board.qwiic_scl, sda=board.qwiic_sda, freq=freq)
+		from machine import I2C, Pin
+		# Todo: Don't hard code I2C pin and port!
+		return I2C(id=1, scl=Pin(19), sda=Pin(18), freq=freq)
 	except Exception as e:
 		print(str(e))
 		print('error: failed to connect to i2c bus')
 	return None
 
-class MicroPythonRP2040I2C(I2CDriver):
+class MicroPythonI2C(I2CDriver):
 
 	# Constructor
 	name = _PLATFORM_NAME
@@ -63,7 +61,10 @@ class MicroPythonRP2040I2C(I2CDriver):
 
 	@classmethod
 	def isPlatform(cls):
-		return os.uname().sysname in ['rp2']
+		try:
+			return sys.implementation.name == 'micropython'
+		except:
+			return False
 
 
 #-------------------------------------------------------------------------		
