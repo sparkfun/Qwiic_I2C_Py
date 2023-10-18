@@ -65,36 +65,22 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 # Drivers and driver baseclass
 from .i2c_driver import I2CDriver
 
+# All supported platform module and class names
+sub_modules = ["linux_i2c", "circuitpy_i2c", "micropython_i2c"]
+class_names = ["LinuxI2C", "CircuitPythonI2C", "MicroPythonI2C"]
+
+# List of platform drivers found on this system
 _drivers = []
-# foo = ["LinuxI2C", "CircuitPythonI2C", "MicroPythonI2C"]
 
-# for driver in foo:
-# 	try:
-# 		print("Importing:", driver)
-# 		submodule = __import__(driver)
-# 		print("Submodule:", submodule)
-# 		_drivers.append(submodule)
-# 	except:
-# 		print("Could not import:", driver)
-# 		pass
-
-try:
-	from .linux_i2c import LinuxI2C
-	_drivers.append(LinuxI2C)
-except:
-	pass
-
-try:
-	from .circuitpy_i2c import CircuitPythonI2C
-	_drivers.append(CircuitPythonI2C)
-except:
-	pass
-
-try:
-	from .micropython_i2c import MicroPythonI2C
-	_drivers.append(MicroPythonI2C)
-except:
-	pass
+# Loop through all supported platform drivers, see if they're included, and
+# append them to the driver list if so
+for i in range(len(sub_modules)):
+	try:
+		full_name = "qwiic_i2c." + sub_modules[i]
+		sub_module = __import__(full_name, None, None, [None])
+		_drivers.append(getattr(sub_module, class_names[i]))
+	except:
+		pass
 
 _theDriver = None
 
