@@ -66,19 +66,21 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 from .i2c_driver import I2CDriver
 
 # All supported platform module and class names
-sub_modules = ["linux_i2c", "circuitpy_i2c", "micropython_i2c"]
-class_names = ["LinuxI2C", "CircuitPythonI2C", "MicroPythonI2C"]
+_supported_platforms = {
+	"linux_i2c": "LinuxI2C",
+	"circuitpy_i2c": "CircuitPythonI2C",
+	"micropython_i2c": "MicroPythonI2C"
+}
 
 # List of platform drivers found on this system
 _drivers = []
 
 # Loop through all supported platform drivers, see if they're included, and
 # append them to the driver list if so
-for i in range(len(sub_modules)):
+for module_name, class_name in _supported_platforms.items():
 	try:
-		full_name = "qwiic_i2c." + sub_modules[i]
-		sub_module = __import__(full_name, None, None, [None])
-		_drivers.append(getattr(sub_module, class_names[i]))
+		sub_module = __import__("qwiic_i2c." + module_name, None, None, [None])
+		_drivers.append(getattr(sub_module, class_name))
 	except:
 		pass
 
