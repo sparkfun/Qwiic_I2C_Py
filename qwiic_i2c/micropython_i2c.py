@@ -1,7 +1,7 @@
 #-----------------------------------------------------------------------------
-# micropython_rp2040_i2c.py
+# micropython_i2c.py
 #
-# Encapsulate RP2040 MicroPython port I2C interface
+# Encapsulate MicroPython port I2C interface
 #------------------------------------------------------------------------
 #
 # Written by  oclyke, Feb 2021
