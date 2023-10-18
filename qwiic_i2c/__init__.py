@@ -63,9 +63,20 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 #
 #-----------------------------------------------------------------------------
 # Drivers and driver baseclass
-from .i2c_driver 	import I2CDriver
+from .i2c_driver import I2CDriver
 
 _drivers = []
+# foo = ["LinuxI2C", "CircuitPythonI2C", "MicroPythonI2C"]
+
+# for driver in foo:
+# 	try:
+# 		print("Importing:", driver)
+# 		submodule = __import__(driver)
+# 		print("Submodule:", submodule)
+# 		_drivers.append(submodule)
+# 	except:
+# 		print("Could not import:", driver)
+# 		pass
 
 try:
 	from .linux_i2c import LinuxI2C

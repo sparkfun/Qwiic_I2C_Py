@@ -97,40 +97,28 @@ class MicroPythonI2C(I2CDriver):
 
 	# read commands ----------------------------------------------------------
 	def readWord(self, address, commandCode):
-		buffer = bytearray(2)
-		self.i2cbus.writeto(address, bytes([commandCode]), False)
-		self.i2cbus.readfrom_into(address, buffer)
+		buffer = self.i2cbus.readfrom_mem(address, commandCode, 2)
 		return (buffer[1] << 8 ) | buffer[0]
 
 	def readByte(self, address, commandCode):
-		buffer = bytearray(1)
-		self.i2cbus.writeto(address, bytes([commandCode]), False)
-		self.i2cbus.readfrom_into(address, buffer)
-		return buffer[0]
+		return self.i2cbus.readfrom_mem(address, commandCode, 1)[0]
 
 	def readBlock(self, address, commandCode, nBytes):
-		buffer = bytearray(nBytes)
-		self.i2cbus.writeto(address, bytes([commandCode]), False)
-		self.i2cbus.readfrom_into(address, buffer)
-		return buffer
+		return self.i2cbus.readfrom_mem(address, commandCode, nBytes)
 
 		
 	# write commands----------------------------------------------------------
 	def writeCommand(self, address, commandCode):
-		self.i2cbus.writeto(address, bytes([commandCode]))
+		self.i2cbus.writeto(address, commandCode.to_bytes(1, 'little'))
 
 	def writeWord(self, address, commandCode, value):
-		buffer = bytearray(2)
-		buffer[0] = value & 0xFF
-		buffer[1] = (value >> 8) & 0xFF
-		self.i2cbus.writeto(address, bytes(bytes([commandCode]) + buffer), False)
+		self.i2cbus.writeto_mem(address, commandCode, value.to_bytes(2, 'little'))
 
 	def writeByte(self, address, commandCode, value):
-		self.i2cbus.writeto(address, bytes([commandCode, value]))
+		self.i2cbus.writeto_mem(address, commandCode, value.to_bytes(1, 'little'))
 
 	def writeBlock(self, address, commandCode, value):
-		data = [value] if not isinstance(value, list) else value
-		self.i2cbus.writeto(address, bytes(bytes([commandCode]) + bytes(data)), False)
+		self.i2cbus.writeto_mem(address, commandCode, bytes(value))
 
 
 	# scan -------------------------------------------------------------------
