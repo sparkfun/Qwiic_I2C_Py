@@ -110,7 +110,10 @@ class CircuitPythonI2C(I2CDriver):
 	def isPlatform(cls):
 
 		# circuit py is mostly - for our purposes - on the samd21 or samd51 based boards
-		return os.uname().sysname in ('samd21', 'samd51')
+		try:
+			return os.uname().sysname in ('samd21', 'samd51')
+		except AttributeError:
+			return False
 
 
 #-------------------------------------------------------------------------		

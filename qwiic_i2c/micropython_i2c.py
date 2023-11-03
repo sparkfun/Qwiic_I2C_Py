@@ -45,6 +45,9 @@ def _connectToI2CBus(freq=400000):
 		from machine import I2C, Pin
 		# Todo: Don't hard code I2C pin and port!
 		return I2C(id=1, scl=Pin(19), sda=Pin(18), freq=freq)
+	## explicit choice of scl/sda is not implemented on XBee ##
+	except TypeError:
+		return I2C(id=1, freq=freq) # do not pass scl and sda values to XBee
 	except Exception as e:
 		print(str(e))
 		print('error: failed to connect to i2c bus')
@@ -63,6 +66,12 @@ class MicroPythonI2C(I2CDriver):
 	def isPlatform(cls):
 		try:
 			return sys.implementation.name == 'micropython'
+		## there's no "name" attribute for implementation on XBee, use platform instead ##
+		except AttributeError:
+			try:
+				return sys.platform == 'xbee-cellular'
+			except:
+				return False
 		except:
 			return False
 

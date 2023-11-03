@@ -59,7 +59,8 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 
 """
 
-from __future__ import print_function
+## not supported on XBee ##
+# from __future__ import print_function
 
 
 #-----------------------------------------------------------------------------
