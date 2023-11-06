@@ -43,11 +43,13 @@ _PLATFORM_NAME = "MicroPython"
 def _connectToI2CBus(freq=400000):
 	try:
 		from machine import I2C, Pin
-		# Todo: Don't hard code I2C pin and port!
-		return I2C(id=1, scl=Pin(19), sda=Pin(18), freq=freq)
-	## explicit choice of scl/sda is not implemented on XBee ##
-	except TypeError:
-		return I2C(id=1, freq=freq) # do not pass scl and sda values to XBee
+		if sys.platform == 'rp2':
+			# Todo: Don't hard code I2C pin and port!
+			return I2C(id=1, scl=Pin(19), sda=Pin(18), freq=freq)
+		elif 'xbee' in sys.platform:
+			return I2C(id=1, freq=freq)
+		else:
+			raise Exception("Unknown MicroPython platform: " + sys.platform)
 	except Exception as e:
 		print(str(e))
 		print('error: failed to connect to i2c bus')
