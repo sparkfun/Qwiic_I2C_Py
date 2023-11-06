@@ -36,8 +36,6 @@
 # SOFTWARE.
 #==================================================================================
 
-from __future__ import print_function
-
 from .i2c_driver import I2CDriver
 
 import sys
