@@ -67,13 +67,7 @@ class MicroPythonI2C(I2CDriver):
 	@classmethod
 	def isPlatform(cls):
 		try:
-			return sys.implementation.name == 'micropython'
-		## there's no "name" attribute for implementation on XBee, use platform instead ##
-		except AttributeError:
-			try:
-				return sys.platform == 'xbee-cellular'
-			except:
-				return False
+			return 'micropython' in sys.implementation
 		except:
 			return False
 
