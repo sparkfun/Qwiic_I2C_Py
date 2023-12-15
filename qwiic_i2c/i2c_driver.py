@@ -228,6 +228,20 @@ class I2CDriver(object):
 		return None
 
 	@classmethod
+	def ping(cls, devAddress):
+		"""
+			Determines if a particular device (at the provided address)
+			is connected to the bus.
+
+			:param devAddress: The I2C address of the device to check
+
+			:return: True if the device is connected, otherwise False.
+			:rtype: bool
+
+		"""
+		return None
+
+	@classmethod
 	def scan(cls):
 		"""
 			Used to scan the I2C bus, returning a list of I2C address attached to the computer.

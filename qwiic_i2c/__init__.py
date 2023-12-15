@@ -148,3 +148,21 @@ def isDeviceConnected(devAddress):
 		return False
 	
 	return i2c.isDeviceConnected(devAddress)
+
+#-------------------------------------------------
+# Method to determine if a particular device (at the provided address)
+# is connected to the bus.
+def ping(devAddress):
+	"""
+	.. function:: ping()
+
+		Function to determine if a particular device (at the provided address)
+		is connected to the bus.
+
+		:param devAddress: The I2C address of the device to check
+
+		:return: True if the device is connected, otherwise False.
+		:rtype: bool
+
+	"""
+	return isDeviceConnected(devAddress)

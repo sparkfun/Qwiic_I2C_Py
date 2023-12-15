@@ -145,6 +145,10 @@ class MicroPythonI2C(I2CDriver):
 		
 		return isConnected
 
+	@classmethod
+	def ping(cls, devAddress):
+		return cls.isDeviceConnected(devAddress)
+
 	# scan -------------------------------------------------------------------
 	@classmethod
 	def scan(cls):
