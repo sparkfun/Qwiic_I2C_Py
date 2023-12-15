@@ -91,7 +91,7 @@ _theDriver = None
 #
 # If no driver is found, a None value is returned
 
-def getI2CDriver(*args, **argk ):
+def getI2CDriver(*args, **argk):
 	"""
 	.. function:: getI2CDriver()
 

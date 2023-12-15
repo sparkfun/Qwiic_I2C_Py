@@ -214,7 +214,7 @@ class I2CDriver(object):
 		pass
 
 	@classmethod
-	def scan(cls):
+	def scan(cls, *args, **argk):
 		"""
 			Used to scan the I2C bus, returning a list of I2C address attached to the computer.
 

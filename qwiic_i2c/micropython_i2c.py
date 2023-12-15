@@ -128,11 +128,11 @@ class MicroPythonI2C(I2CDriver):
 
 	# scan -------------------------------------------------------------------
 	@classmethod
-	def scan(cls):
+	def scan(cls, *args, **argk):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
 	
 		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus()
+			cls._i2cbus = _connectToI2CBus(*args, **argk)
 	
 		if cls._i2cbus == None:
 			return []

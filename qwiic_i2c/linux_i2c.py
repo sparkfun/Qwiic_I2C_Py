@@ -245,14 +245,14 @@ class LinuxI2C(I2CDriver):
 	# Scans the I2C bus and returns a list of addresses that have a devices connected
 	#
 	@classmethod
-	def scan(cls):
+	def scan(cls, *args, **argk):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
 	
 		# The plan - loop through the I2C address space and read a byte. If an 
 		# OSError occures, a device isn't at that address. 
 	
 		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus()
+			cls._i2cbus = _connectToI2CBus(*args, **argk)
 	
 		if cls._i2cbus == None:
 			return []

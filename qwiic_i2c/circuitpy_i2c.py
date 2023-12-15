@@ -250,13 +250,13 @@ class CircuitPythonI2C(I2CDriver):
 	# Scans the I2C bus and returns a list of addresses that have a devices connected
 	#
 	@classmethod
-	def scan(cls):
+	def scan(cls, *args, **argk):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
 	
 		# Just call the system build it....
 	
 		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus()
+			cls._i2cbus = _connectToI2CBus(*args, **argk)
 	
 		if cls._i2cbus == None:
 			return []
