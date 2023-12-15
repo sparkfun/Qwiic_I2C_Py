@@ -51,7 +51,7 @@ _PLATFORM_NAME = "CircuitPython"
 # Attempts to fail elegantly. Put this in a central place to support 
 # error handling  -- especially on non-circuitpy platforms
 #
-def _connectToI2CBus():
+def _connectToI2CBus(*args, **argk):
 
 	try:
 		import board
@@ -97,11 +97,13 @@ class CircuitPythonI2C(I2CDriver):
 
 	_i2cbus = None
 
-	def __init__(self):
+	def __init__(self, *args, **argk):
 
-		# Call the super class. The super calss will use default values if not 
-		# proviced
-		I2CDriver.__init__(self)
+		# Call the super class. The super class will use default values if not 
+		# provided
+		# 
+		# Note: 
+		I2CDriver.__init__(self, *args, **argk)
 
 
 

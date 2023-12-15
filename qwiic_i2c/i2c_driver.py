@@ -78,7 +78,7 @@ class I2CDriver(object):
 	# stubs
 	name = 'qwiic I2C abstract base class'
 
-	def __init__(self):
+	def __init__(self, *args, **argk):
 		pass
 
 

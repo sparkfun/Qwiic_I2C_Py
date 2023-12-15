@@ -59,10 +59,10 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 		with qwiic_i2c.getI2CDriver() as i2c:
 			i2c.writeByte(myDeviceAddress, register, 0x3F)
 """
-# Package to abstract the interace to the execution platforms I2C bus for QWIIC.
+# Package to abstract the interface to the execution platforms I2C bus for QWIIC.
 #
 #-----------------------------------------------------------------------------
-# Drivers and driver baseclass
+# Drivers and driver base class
 from .i2c_driver import I2CDriver
 
 # All supported platform module and class names
@@ -87,11 +87,11 @@ for module_name, class_name in _supported_platforms.items():
 _theDriver = None
 
 #-------------------------------------------------
-# Exported method to get the I2C driver for the execution plaform. 
+# Exported method to get the I2C driver for the execution platform. 
 #
 # If no driver is found, a None value is returned
 
-def getI2CDriver():
+def getI2CDriver(*args, **argk ):
 	"""
 	.. function:: getI2CDriver()
 
@@ -116,10 +116,10 @@ def getI2CDriver():
 
 	for driverClass in _drivers:
 
-		# Does this class/driverd support this platform?
+		# Does this class/driver support this platform?
 		if driverClass.isPlatform():
 
-			_theDriver = driverClass()
+			_theDriver = driverClass(*args, **argk)
 			# Yes - return the driver object
 			return _theDriver
 
@@ -128,7 +128,7 @@ def getI2CDriver():
 #-------------------------------------------------
 # Method to determine if a particular device (at the provided address)
 # is connected to the bus.
-def isDeviceConnected(devAddress):
+def isDeviceConnected(devAddress, *args, **argk):
 	"""
 	.. function:: isDeviceConnected()
 
@@ -141,7 +141,7 @@ def isDeviceConnected(devAddress):
 		:rtype: bool
 
 	"""
-	i2c = getI2CDriver()
+	i2c = getI2CDriver(*args, **argk)
 
 	if not i2c:
 		print("Unable to load the I2C driver for this device")

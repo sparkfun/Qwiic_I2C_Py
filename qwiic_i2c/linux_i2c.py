@@ -50,7 +50,7 @@ _retry_count = 3
 # Attempts to fail elegantly - often an issue with permissions with the I2C 
 # bus. Users of this system should be added to the system i2c group
 #
-def _connectToI2CBus():
+def _connectToI2CBus(bus_number=1, *args, **argk):
 
 	try:
 		import smbus2
@@ -58,7 +58,7 @@ def _connectToI2CBus():
 		print("Error: Unable to load smbus module. Unable to continue", file=sys.stderr)
 		return None
 
-	iBus = 1
+	iBus = bus_number
 	daBus = None
 
 	error=False
@@ -69,7 +69,7 @@ def _connectToI2CBus():
 		daBus =  smbus2.SMBus(iBus)
 	except Exception as ee:
 		if(type(ee) is IOError and ee.errno == 13):
-			print("Error:\tUnable to connect to I2C bus %d: Permission denied.\n\tVerify you have permissoin to access the I2C bus" % (iBus), file=sys.stderr)
+			print("Error:\tUnable to connect to I2C bus %d: Permission denied.\n\tVerify you have permission to access the I2C bus" % (iBus), file=sys.stderr)
 		else:
 			print("Error:\tFailed to connect to I2C bus %d. Error: %s" % (iBus, str(ee)), file=sys.stderr)
 
@@ -101,11 +101,13 @@ class LinuxI2C(I2CDriver):
 	_i2cbus = None
 	_i2c_msg = None
 
-	def __init__(self):
+	def __init__(self, bus_number=1, *args, **argk):
 
-		# Call the super class. The super calss will use default values if not 
-		# proviced
-		I2CDriver.__init__(self)
+		# Call the super class. The super class will use default values if not 
+		# provided
+		I2CDriver.__init__(self, *args, **argk)
+
+		self._bus_number = bus_number
 
 
 
@@ -126,8 +128,11 @@ class LinuxI2C(I2CDriver):
 
 		if(name == "i2cbus"):
 			if( self._i2cbus == None):
-				self._i2cbus = _connectToI2CBus()
+				self._i2cbus = _connectToI2CBus(bus_number=self._bus_number)
 			return self._i2cbus
+
+		elif (name == 'bus_number'):
+			return self._bus_number
 
 		else:
 			# Note - we call __getattribute__ to the super class (object).
@@ -136,12 +141,16 @@ class LinuxI2C(I2CDriver):
 	#-------------------------------------------------------------------------
 	# General set attribute method
 	#
-	# Basically implemented to make the i2cbus attribute readonly to users 
+	# Basically implemented to make the i2cbus attribute read only to users 
 	# of this class. 
 	#
 	def __setattr__(self, name, value):
 
-		if(name != "i2cbus"):
+		# if the bus number is passed in, and we haven't created a driver yet, use it
+		if (name == 'bus_number' and self._i2cbus == None):
+			self._bus_number = value
+		
+		elif(name != "i2cbus"):
 			super(I2CDriver, self).__setattr__(name, value)
 
 #-------------------------------------------------------------------------	

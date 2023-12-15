@@ -40,7 +40,7 @@ import sys
 _PLATFORM_NAME = "MicroPython"
 
 # used internally in this file to get i2c class object 
-def _connectToI2CBus(freq=400000):
+def _connectToI2CBus(freq=400000, *arg, **argk):
 	try:
 		from machine import I2C, Pin
 		if sys.platform == 'rp2':
@@ -61,8 +61,8 @@ class MicroPythonI2C(I2CDriver):
 	name = _PLATFORM_NAME
 	_i2cbus = None
 
-	def __init__(self):
-		I2CDriver.__init__(self) # init super
+	def __init__(self, *arg, **argk):
+		I2CDriver.__init__(self, *arg, **argk) # init super
 
 	@classmethod
 	def isPlatform(cls):
