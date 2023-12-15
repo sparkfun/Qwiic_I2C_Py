@@ -65,7 +65,10 @@ def _connectToI2CBus():
 	# Connect - catch errors 
 
 	try:
-		daBus =  busio.I2C(board.GP1, board.GP0, frequency=400000)
+		if hasattr(board, "STEMMA_I2C"):
+			daBus = board.STEMMA_I2C()
+		else:
+			daBus = busio.I2C(board.SCL, board.SDA)
 	except Exception as ee:
 		if type(ee) is RuntimeError:
 			print("Error:\tUnable to connect to I2C bus. %s" % (ee))
