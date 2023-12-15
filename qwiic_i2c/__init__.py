@@ -125,6 +125,23 @@ def getI2CDriver():
 
 	return None
 
+def get_i2c_driver():
+	"""
+	.. function:: get_i2c_driver()
+
+		Returns the qwiic I2C driver object for current platform.
+
+		:return: A qwiic I2C driver object for the current platform.
+		:rtype: object
+
+		:example:
+
+		>>> import qwiic_i2c
+		>>> i2cDriver = qwiic_i2c.get_i2c_driver()
+		>>> myData = i2cDriver.readByte(0x73, 0x34)
+	"""
+	return getI2CDriver()
+
 #-------------------------------------------------
 # Method to determine if a particular device (at the provided address)
 # is connected to the bus.
@@ -148,6 +165,21 @@ def isDeviceConnected(devAddress):
 		return False
 	
 	return i2c.isDeviceConnected(devAddress)
+
+def is_device_connected(devAddress):
+	"""
+	.. function:: is_device_connected()
+
+		Function to determine if a particular device (at the provided address)
+		is connected to the bus.
+
+		:param devAddress: The I2C address of the device to check
+
+		:return: True if the device is connected, otherwise False.
+		:rtype: bool
+
+	"""
+	return isDeviceConnected(devAddress)
 
 #-------------------------------------------------
 # Method to determine if a particular device (at the provided address)

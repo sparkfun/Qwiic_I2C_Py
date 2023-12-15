@@ -85,6 +85,9 @@ def _connectToI2CBus():
 
 	return daBus
 
+def _connect_to_i2c_bus():
+	return _connectToI2CBus()
+
 # notes on determining CirPy platform
 #
 # - os.uname().sysname == samd*
@@ -110,6 +113,10 @@ class CircuitPythonI2C(I2CDriver):
 			return 'circuitpython' in sys.implementation
 		except:
 			return False
+
+	@classmethod
+	def is_platform(cls):
+		return cls.isPlatform()
 
 #-------------------------------------------------------------------------		
 	# General get attribute method
@@ -159,6 +166,9 @@ class CircuitPythonI2C(I2CDriver):
 		# build and return a word
 		return (buffer[1] << 8 ) | buffer[0]
 
+	def read_word(self, address, commandCode):
+		return self.readWord(address, commandCode)
+
 	#----------------------------------------------------------
 	def readByte(self, address, commandCode):
 		if not self.i2cbus.try_lock():
@@ -175,6 +185,9 @@ class CircuitPythonI2C(I2CDriver):
 			self.i2cbus.unlock()
 
 		return buffer[0]
+
+	def read_byte(self, address, commandCode = None):
+		return self.readByte(address, commandCode)
 
 	#----------------------------------------------------------
 	def readBlock(self, address, commandCode, nBytes):
@@ -193,7 +206,9 @@ class CircuitPythonI2C(I2CDriver):
 
 		return list(buffer)
 
-		
+	def read_block(self, address, commandCode, nBytes):
+		return self.readBlock(address, commandCode, nBytes)
+
 	#--------------------------------------------------------------------------	
 	# write Data Commands 
 	#
@@ -214,6 +229,9 @@ class CircuitPythonI2C(I2CDriver):
 		else:
 			self.i2cbus.unlock()
 
+	def write_command(self, address, commandCode):
+		return self.writeCommand(address, commandCode)
+
 	#----------------------------------------------------------
 	def writeWord(self, address, commandCode, value):
 		if not self.i2cbus.try_lock():
@@ -231,6 +249,9 @@ class CircuitPythonI2C(I2CDriver):
 		else:
 			self.i2cbus.unlock()
 
+	def write_word(self, address, commandCode, value):
+		return self.writeWord(address, commandCode, value)
+
 	#----------------------------------------------------------
 	def writeByte(self, address, commandCode, value):
 		if not self.i2cbus.try_lock():
@@ -244,6 +265,9 @@ class CircuitPythonI2C(I2CDriver):
 		else:
 			self.i2cbus.unlock()
 
+	def write_byte(self, address, commandCode, value):
+		return self.writeByte(address, commandCode, value)
+
 	#----------------------------------------------------------
 	def writeBlock(self, address, commandCode, value):
 		if not self.i2cbus.try_lock():
@@ -256,6 +280,9 @@ class CircuitPythonI2C(I2CDriver):
 			raise e
 		else:
 			self.i2cbus.unlock()
+
+	def write_block(self, address, commandCode, value):
+		return self.writeBlock(address, commandCode, value)
 
 	@classmethod
 	def isDeviceConnected(cls, devAddress):
@@ -279,6 +306,10 @@ class CircuitPythonI2C(I2CDriver):
 			cls._i2cbus.unlock()
 
 		return isConnected
+
+	@classmethod
+	def is_device_connected(cls, devAddress):
+		return cls.isDeviceConnected(devAddress)
 
 	@classmethod
 	def ping(cls, devAddress):

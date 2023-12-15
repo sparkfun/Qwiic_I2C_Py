@@ -82,6 +82,8 @@ def _connectToI2CBus():
 
 	return daBus
 
+def _connect_to_i2c_bus():
+	return _connectToI2CBus()
 
 # notes on determining Linux platform
 #
@@ -115,6 +117,9 @@ class LinuxI2C(I2CDriver):
 
 		return sys.platform in ('linux', 'linux2')
 
+	@classmethod
+	def is_platform(cls):
+		return cls.isPlatform()
 
 #-------------------------------------------------------------------------		
 	# General get attribute method
@@ -166,6 +171,9 @@ class LinuxI2C(I2CDriver):
 
 		return data
 
+	def read_word(self, address, commandCode):
+		return self.readWord(address, commandCode)
+
 	def readByte(self, address, commandCode = None):
 		data = 0
 		for i in range(_retry_count):
@@ -185,6 +193,8 @@ class LinuxI2C(I2CDriver):
 
 		return data
 
+	def read_byte(self, address, commandCode = None):
+		return self.readByte(address, commandCode)
 
 	def readBlock(self, address, commandCode, nBytes):
 		data = 0
@@ -201,7 +211,10 @@ class LinuxI2C(I2CDriver):
 				pass
 
 		return data
-		
+
+	def read_block(self, address, commandCode, nBytes):
+		return self.readBlock(address, commandCode, nBytes)
+
 	#--------------------------------------------------------------------------	
 	# write Data Commands 
 	#
@@ -214,14 +227,22 @@ class LinuxI2C(I2CDriver):
 
 		return self.i2cbus.write_byte(address, commandCode)
 
+	def write_command(self, address, commandCode):
+		return self.writeCommand(address, commandCode)
+
 	def writeWord(self, address, commandCode, value):
 
 		return self.i2cbus.write_word_data(address, commandCode, value)
 
+	def write_word(self, address, commandCode, value):
+		return self.writeWord(address, commandCode, value)
 
 	def writeByte(self, address, commandCode, value):
 
 		return self.i2cbus.write_byte_data(address, commandCode, value)
+
+	def write_byte(self, address, commandCode, value):
+		return self.writeByte(address, commandCode, value)
 
 	def writeBlock(self, address, commandCode, value):
 
@@ -229,6 +250,9 @@ class LinuxI2C(I2CDriver):
 		# required by this call)
 		tmpVal = list(value) if type(value) == bytearray else value
 		self.i2cbus.write_i2c_block_data(address, commandCode, tmpVal)
+
+	def write_block(self, address, commandCode, value):
+		return self.writeBlock(address, commandCode, value)
 
 	@classmethod
 	def isDeviceConnected(cls, devAddress):
@@ -249,6 +273,10 @@ class LinuxI2C(I2CDriver):
 			pass
 		
 		return isConnected
+
+	@classmethod
+	def is_device_connected(cls, devAddress):
+		return cls.isDeviceConnected(devAddress)
 
 	@classmethod
 	def ping(cls, devAddress):

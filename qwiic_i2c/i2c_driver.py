@@ -95,6 +95,16 @@ class I2CDriver(object):
 		"""
 		pass
 
+	@classmethod
+	def is_platform(cls):
+		""" 
+			Called to determine if the specific driver supports the current platorm
+
+			:return: True if this platform is supported, otherwise False
+			:rtype: bool
+
+		"""
+		pass
 
 	#-------------------------------------------------------------------------	
 	# stubs to support Python with statements. 
@@ -124,7 +134,33 @@ class I2CDriver(object):
 		"""
 		return None
 
+	def read_word(self, address, commandCode):
+		""" 
+			Called to read a word (16 bits) from a specific device.
+
+			:param address: The I2C address of the device to read from
+			:param commandCode: The "command" or register to read from 
+
+			:return: Returns the read data
+			:rtype: integer - first 16 bits contain the read data. 
+
+		"""
+		return None
+
 	def readByte(self, address, commandCode):
+		""" 
+			Called to read a byte (8 bits) from a specific device.
+
+			:param address: The I2C address of the device to read from
+			:param commandCode: The "command" or register to read from 
+
+			:return: Returns the read data
+			:rtype: integer - first 8 bits contain the read data. 
+
+		"""
+		return None
+
+	def read_byte(self, address, commandCode):
 		""" 
 			Called to read a byte (8 bits) from a specific device.
 
@@ -150,7 +186,21 @@ class I2CDriver(object):
 
 		"""
 		return None
-		
+	
+	def read_block(self, address, commandCode, nBytes):
+		""" 
+			Called to read a block of bytesfrom a specific device.
+
+			:param address: The I2C address of the device to read from
+			:param commandCode: The "command" or register to read from
+			:param nBytes: The number of bytes to read from the device
+
+			:return: Returns the read data as a list of integers.
+			:rtype: list 
+
+		"""
+		return None
+	
 	#--------------------------------------------------------------------------	
 	# write Data Commands 
 	#
@@ -160,6 +210,18 @@ class I2CDriver(object):
 	#
 
 	def writeCommand(self, address, commandCode):
+		""" 
+			Called to write a command to a device. No actual data is written
+
+			:param address: The I2C address of the device to read from
+			:param commandCode: The "command" or register to read from 
+
+			:return: None
+
+		"""
+		return None
+
+	def write_command(self, address, commandCode):
 		""" 
 			Called to write a command to a device. No actual data is written
 
@@ -185,6 +247,18 @@ class I2CDriver(object):
 
 		return None
 
+	def write_word(self, address, commandCode, value):
+		""" 
+			Called to write a word (16 bits) to a device. 
+
+			:param address: The I2C address of the device to read from
+			:param commandCode: The "command" or register to read from
+			:param value: The word (16 bits) to write to the I2C bus
+
+			:return: None
+
+		"""
+		return None
 
 	def writeByte(self, address, commandCode, value):
 		""" 
@@ -200,6 +274,19 @@ class I2CDriver(object):
 
 		return None
 
+	def write_byte(self, address, commandCode, value):
+		""" 
+			Called to write a byte (8 bits) to a device. 
+
+			:param address: The I2C address of the device to read from
+			:param commandCode: The "command" or register to read from
+			:param value: The byte (8 bits) to write to the I2C bus
+
+			:return: None
+
+		"""
+		return None
+
 	def writeBlock(self, address, commandCode, value):
 		""" 
 			Called to write a block of bytes to a device. 
@@ -213,8 +300,35 @@ class I2CDriver(object):
 		"""
 		pass
 
+	def write_block(self, address, commandCode, value):
+		""" 
+			Called to write a block of bytes to a device. 
+
+			:param address: The I2C address of the device to read from
+			:param commandCode: The "command" or register to read from
+			:param value: A list of bytes (ints) to write on the I2C bus.
+
+			:return: None
+
+		"""
+		return None
+
 	@classmethod
 	def isDeviceConnected(cls, devAddress):
+		"""
+			Determines if a particular device (at the provided address)
+			is connected to the bus.
+
+			:param devAddress: The I2C address of the device to check
+
+			:return: True if the device is connected, otherwise False.
+			:rtype: bool
+
+		"""
+		return None
+
+	@classmethod
+	def is_device_connected(cls, devAddress):
 		"""
 			Determines if a particular device (at the provided address)
 			is connected to the bus.
