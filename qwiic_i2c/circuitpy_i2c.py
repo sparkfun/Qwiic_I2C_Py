@@ -149,8 +149,13 @@ class CircuitPythonI2C(I2CDriver):
 
 		buffer = bytearray(2)
 
-		self.i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
-		self.i2cbus.unlock()
+		try:
+			self.i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+		except Exception as e:
+			self.i2cbus.unlock()
+			raise e
+		else:
+			self.i2cbus.unlock()
 
 		# build and return a word
 		return (buffer[1] << 8 ) | buffer[0]
@@ -163,8 +168,13 @@ class CircuitPythonI2C(I2CDriver):
 
 		buffer = bytearray(1)
 
-		self.i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
-		self.i2cbus.unlock()
+		try:
+			self.i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+		except Exception as e:
+			self.i2cbus.unlock()
+			raise e
+		else:
+			self.i2cbus.unlock()
 
 		return buffer[0]
 
@@ -176,8 +186,13 @@ class CircuitPythonI2C(I2CDriver):
 
 		buffer = bytearray(nBytes)
 
-		self.i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
-		self.i2cbus.unlock()
+		try:
+			self.i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+		except Exception as e:
+			self.i2cbus.unlock()
+			raise e
+		else:
+			self.i2cbus.unlock()
 
 		return list(buffer)
 
@@ -194,8 +209,13 @@ class CircuitPythonI2C(I2CDriver):
 		if not self.i2cbus.try_lock():
 			return None
 		
-		self.i2cbus.writeto(address, bytes([commandCode]))
-		self.i2cbus.unlock()
+		try:
+			self.i2cbus.writeto(address, bytes([commandCode]))
+		except Exception as e:
+			self.i2cbus.unlock()
+			raise e
+		else:
+			self.i2cbus.unlock()
 
 	#----------------------------------------------------------
 	def writeWord(self, address, commandCode, value):
@@ -206,8 +226,13 @@ class CircuitPythonI2C(I2CDriver):
 		buffer[0] = value & 0xFF
 		buffer[1] = (value >> 8) & 0xFF
 
-		self.i2cbus.writeto(address, bytes([commandCode] + buffer))
-		self.i2cbus.unlock()
+		try:
+			self.i2cbus.writeto(address, bytes([commandCode] + buffer))
+		except Exception as e:
+			self.i2cbus.unlock()
+			raise e
+		else:
+			self.i2cbus.unlock()
 
 
 	#----------------------------------------------------------
@@ -215,16 +240,26 @@ class CircuitPythonI2C(I2CDriver):
 		if not self.i2cbus.try_lock():
 			return None
 		
-		self.i2cbus.writeto(address, bytes([commandCode] + [value]))
-		self.i2cbus.unlock()
+		try:
+			self.i2cbus.writeto(address, bytes([commandCode] + [value]))
+		except Exception as e:
+			self.i2cbus.unlock()
+			raise e
+		else:
+			self.i2cbus.unlock()
 
 	#----------------------------------------------------------
 	def writeBlock(self, address, commandCode, value):
 		if not self.i2cbus.try_lock():
 			return None
 		
-		self.i2cbus.writeto(address, bytes([commandCode] + value))
-		self.i2cbus.unlock()
+		try:
+			self.i2cbus.writeto(address, bytes([commandCode] + value))
+		except Exception as e:
+			self.i2cbus.unlock()
+			raise e
+		else:
+			self.i2cbus.unlock()
 
 	@classmethod
 	def isDeviceConnected(cls, devAddress):
@@ -240,11 +275,12 @@ class CircuitPythonI2C(I2CDriver):
 			# Try to write nothing to the device
 			# If it throws an I/O error - the device isn't connected
 			cls._i2cbus.writeto(devAddress, bytearray())
-			cls._i2cbus.unlock()
 			isConnected = True
 		except Exception as ee:
 			print("Error connecting to Device: %X, %s" % (devAddress, ee))
 			pass
+		finally:
+			cls._i2cbus.unlock()
 
 		return isConnected
 
