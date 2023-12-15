@@ -125,6 +125,25 @@ class MicroPythonI2C(I2CDriver):
 	def writeBlock(self, address, commandCode, value):
 		self.i2cbus.writeto_mem(address, commandCode, bytes(value))
 
+	@classmethod
+	def isDeviceConnected(cls, devAddress):
+		if cls._i2cbus == None:
+			cls._i2cbus = _connectToI2CBus()
+		
+		if cls._i2cbus == None:
+			return False
+		
+		isConnected = False
+		try:
+			# Try to write nothing to the device
+			# If it throws an I/O error - the device isn't connected
+			cls._i2cbus.writeto(devAddress, bytearray())
+			isConnected = True
+		except Exception as ee:
+			print("Error connecting to Device: %X, %s" % (devAddress, ee))
+			pass
+		
+		return isConnected
 
 	# scan -------------------------------------------------------------------
 	@classmethod

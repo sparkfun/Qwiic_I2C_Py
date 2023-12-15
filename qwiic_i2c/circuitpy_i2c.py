@@ -223,8 +223,27 @@ class CircuitPythonI2C(I2CDriver):
 		self.i2cbus.writeto(address, bytes([commandCode] + value))
 		self.i2cbus.unlock()
 
+	@classmethod
+	def isDeviceConnected(cls, devAddress):
+		if cls._i2cbus == None:
+			cls._i2cbus = _connectToI2CBus()
+		if cls._i2cbus == None:
+			return False
+		if not cls._i2cbus.try_lock():
+			return False
 
+		isConnected = False
+		try:
+			# Try to write nothing to the device
+			# If it throws an I/O error - the device isn't connected
+			cls._i2cbus.writeto(devAddress, bytearray())
+			cls._i2cbus.unlock()
+			isConnected = True
+		except Exception as ee:
+			print("Error connecting to Device: %X, %s" % (devAddress, ee))
+			pass
 
+		return isConnected
 
 	#-----------------------------------------------------------------------
 	# scan()

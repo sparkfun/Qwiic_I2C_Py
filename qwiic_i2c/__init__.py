@@ -147,16 +147,4 @@ def isDeviceConnected(devAddress):
 		print("Unable to load the I2C driver for this device")
 		return False
 	
-	isConnected = False
-	try:
-		# Try to write a byte to the device, command 0x0
-		# If it throws an I/O error - the device isn't connected
-		with i2c as i2cDriver:
-			i2cDriver.writeCommand(devAddress, 0x0)
-
-			isConnected = True
-	except Exception as ee:
-		print("Error connecting to Device: %X, %s" % (devAddress, ee))
-		pass
-
-	return isConnected
+	return i2c.isDeviceConnected(devAddress)
