@@ -143,9 +143,8 @@ class CircuitPythonI2C(I2CDriver):
 	# read Data Command
 
 	def readWord(self, address, commandCode):
-
 		if not self.i2cbus.try_lock():
-			return None
+			raise Exception("Unable to lock I2C bus")
 
 		buffer = bytearray(2)
 
@@ -162,9 +161,8 @@ class CircuitPythonI2C(I2CDriver):
 
 	#----------------------------------------------------------
 	def readByte(self, address, commandCode):
-
 		if not self.i2cbus.try_lock():
-			return None
+			raise Exception("Unable to lock I2C bus")
 
 		buffer = bytearray(1)
 
@@ -180,9 +178,8 @@ class CircuitPythonI2C(I2CDriver):
 
 	#----------------------------------------------------------
 	def readBlock(self, address, commandCode, nBytes):
-
 		if not self.i2cbus.try_lock():
-			return None
+			raise Exception("Unable to lock I2C bus")
 
 		buffer = bytearray(nBytes)
 
@@ -207,7 +204,7 @@ class CircuitPythonI2C(I2CDriver):
 
 	def writeCommand(self, address, commandCode):
 		if not self.i2cbus.try_lock():
-			return None
+			raise Exception("Unable to lock I2C bus")
 		
 		try:
 			self.i2cbus.writeto(address, bytes([commandCode]))
@@ -220,7 +217,7 @@ class CircuitPythonI2C(I2CDriver):
 	#----------------------------------------------------------
 	def writeWord(self, address, commandCode, value):
 		if not self.i2cbus.try_lock():
-			return None
+			raise Exception("Unable to lock I2C bus")
 
 		buffer = [0, 0]
 		buffer[0] = value & 0xFF
@@ -234,11 +231,10 @@ class CircuitPythonI2C(I2CDriver):
 		else:
 			self.i2cbus.unlock()
 
-
 	#----------------------------------------------------------
 	def writeByte(self, address, commandCode, value):
 		if not self.i2cbus.try_lock():
-			return None
+			raise Exception("Unable to lock I2C bus")
 		
 		try:
 			self.i2cbus.writeto(address, bytes([commandCode] + [value]))
@@ -251,7 +247,7 @@ class CircuitPythonI2C(I2CDriver):
 	#----------------------------------------------------------
 	def writeBlock(self, address, commandCode, value):
 		if not self.i2cbus.try_lock():
-			return None
+			raise Exception("Unable to lock I2C bus")
 		
 		try:
 			self.i2cbus.writeto(address, bytes([commandCode] + value))
