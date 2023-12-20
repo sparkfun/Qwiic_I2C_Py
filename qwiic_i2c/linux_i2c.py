@@ -260,8 +260,7 @@ class LinuxI2C(I2CDriver):
 			# If it throws an I/O error - the device isn't connected
 			self.i2cbus.write_quick(devAddress)
 			isConnected = True
-		except Exception as ee:
-			print("Error connecting to Device: %X, %s" % (devAddress, ee))
+		except:
 			pass
 		
 		return isConnected

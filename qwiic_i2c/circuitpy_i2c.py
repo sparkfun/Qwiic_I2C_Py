@@ -300,8 +300,7 @@ class CircuitPythonI2C(I2CDriver):
 			# If it throws an I/O error - the device isn't connected
 			self.i2cbus.writeto(devAddress, bytearray())
 			isConnected = True
-		except Exception as ee:
-			print("Error connecting to Device: %X, %s" % (devAddress, ee))
+		except:
 			pass
 		finally:
 			self.i2cbus.unlock()
