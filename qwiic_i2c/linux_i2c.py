@@ -279,7 +279,12 @@ class LinuxI2C(I2CDriver):
 	#
 	def scan(self):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
-		return self.i2cbus.scan()
+		foundDevices = []
+		# Loop over the list of legal addresses (0x08 - 0x77)
+		for currAddress in range(0x08, 0x78):
+			if self.ping(currAddress) == True:
+				foundDevices.append(currAddress)
+		return foundDevices
 
 	#-----------------------------------------------------------------------
 	# Custom method for reading +8-bit register using `i2c_msg` from `smbus2`
