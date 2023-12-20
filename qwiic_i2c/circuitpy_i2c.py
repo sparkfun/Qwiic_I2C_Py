@@ -291,6 +291,9 @@ class CircuitPythonI2C(I2CDriver):
 		return self.writeBlock(address, commandCode, value)
 
 	def isDeviceConnected(self, devAddress):
+		if not self.i2cbus.try_lock():
+			raise Exception("Unable to lock I2C bus")
+		
 		isConnected = False
 		try:
 			# Try to write nothing to the device
@@ -306,10 +309,10 @@ class CircuitPythonI2C(I2CDriver):
 		return isConnected
 
 	def is_device_connected(self, devAddress):
-		return cls.isDeviceConnected(devAddress)
+		return self.isDeviceConnected(devAddress)
 
 	def ping(self, devAddress):
-		return cls.isDeviceConnected(devAddress)
+		return self.isDeviceConnected(devAddress)
 
 	#-----------------------------------------------------------------------
 	# scan()
@@ -318,4 +321,15 @@ class CircuitPythonI2C(I2CDriver):
 	#
 	def scan(self):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
-		return self.i2cbus.scan()
+		if not self.i2cbus.try_lock():
+			raise Exception("Unable to lock I2C bus")
+		
+		try:
+			devices = self.i2cbus.scan()
+		except Exception as e:
+			self.i2cbus.unlock()
+			raise e
+		else:
+			self.i2cbus.unlock()
+		
+		return devices
