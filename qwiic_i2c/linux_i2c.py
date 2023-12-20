@@ -50,7 +50,7 @@ _retry_count = 3
 # Attempts to fail elegantly - often an issue with permissions with the I2C 
 # bus. Users of this system should be added to the system i2c group
 #
-def _connectToI2CBus():
+def _connectToI2CBus(iBus=1, *args, **argk):
 
 	try:
 		import smbus2
@@ -58,7 +58,6 @@ def _connectToI2CBus():
 		print("Error: Unable to load smbus module. Unable to continue", file=sys.stderr)
 		return None
 
-	iBus = 1
 	daBus = None
 
 	error=False
@@ -82,8 +81,8 @@ def _connectToI2CBus():
 
 	return daBus
 
-def _connect_to_i2c_bus():
-	return _connectToI2CBus()
+def _connect_to_i2c_bus(*args, **argk):
+	return _connectToI2CBus(*args, **argk)
 
 # notes on determining Linux platform
 #
@@ -103,13 +102,13 @@ class LinuxI2C(I2CDriver):
 	_i2cbus = None
 	_i2c_msg = None
 
-	def __init__(self):
+	def __init__(self, iBus=1, *args, **argk):
 
 		# Call the super class. The super calss will use default values if not 
 		# proviced
 		I2CDriver.__init__(self)
 
-
+		self._iBus = iBus
 
 	# Okay, are we running on a Linux system?
 	@classmethod
@@ -131,7 +130,7 @@ class LinuxI2C(I2CDriver):
 
 		if(name == "i2cbus"):
 			if( self._i2cbus == None):
-				self._i2cbus = _connectToI2CBus()
+				self._i2cbus = _connectToI2CBus(self._iBus)
 			return self._i2cbus
 
 		else:
@@ -254,19 +253,12 @@ class LinuxI2C(I2CDriver):
 	def write_block(self, address, commandCode, value):
 		return self.writeBlock(address, commandCode, value)
 
-	@classmethod
-	def isDeviceConnected(cls, devAddress):
-		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus()
-		
-		if cls._i2cbus == None:
-			return False
-		
+	def isDeviceConnected(self, devAddress):
 		isConnected = False
 		try:
 			# Try to write nothing to the device
 			# If it throws an I/O error - the device isn't connected
-			cls._i2cbus.write_quick(devAddress)
+			self.i2cbus.write_quick(devAddress)
 			isConnected = True
 		except Exception as ee:
 			print("Error connecting to Device: %X, %s" % (devAddress, ee))
@@ -274,45 +266,20 @@ class LinuxI2C(I2CDriver):
 		
 		return isConnected
 
-	@classmethod
-	def is_device_connected(cls, devAddress):
-		return cls.isDeviceConnected(devAddress)
+	def is_device_connected(self, devAddress):
+		return self.isDeviceConnected(devAddress)
 
-	@classmethod
-	def ping(cls, devAddress):
-		return cls.isDeviceConnected(devAddress)
+	def ping(self, devAddress):
+		return self.isDeviceConnected(devAddress)
 
 	#-----------------------------------------------------------------------
 	# scan()
 	#
 	# Scans the I2C bus and returns a list of addresses that have a devices connected
 	#
-	@classmethod
-	def scan(cls):
+	def scan(self):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
-	
-		# The plan - loop through the I2C address space and read a byte. If an 
-		# OSError occures, a device isn't at that address. 
-	
-		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus()
-	
-		if cls._i2cbus == None:
-			return []
-	
-		foundDevices = []
-	
-		# Loop over the address space - which is 7 bits (0-127 range)
-		for currAddress in range(0, 128):
-			try:
-				cls._i2cbus.read_byte(currAddress)
-			except Exception:
-				continue
-	
-			foundDevices.append(currAddress)
-	
-	
-		return foundDevices
+		return self.i2cbus.scan()
 
 	#-----------------------------------------------------------------------
 	# Custom method for reading +8-bit register using `i2c_msg` from `smbus2`

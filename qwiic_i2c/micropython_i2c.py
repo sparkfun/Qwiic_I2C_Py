@@ -40,12 +40,17 @@ import sys
 _PLATFORM_NAME = "MicroPython"
 
 # used internally in this file to get i2c class object 
-def _connectToI2CBus(freq=400000):
+def _connectToI2CBus(sda=18, scl=19, freq=100000, *args, **argk):
 	try:
 		from machine import I2C, Pin
 		if sys.platform == 'rp2':
-			# Todo: Don't hard code I2C pin and port!
-			return I2C(id=1, scl=Pin(19), sda=Pin(18), freq=freq)
+			# I2C busses follow every other pair of pins
+			scl_id = (scl // 2) % 2
+			sda_id = (sda // 2) % 2
+			# Check if both pins are on the same bus
+			if scl_id != sda_id:
+				raise Exception("I2C SCL and SDA pins must be on same ports")
+			return I2C(id=scl_id, scl=Pin(scl), sda=Pin(sda), freq=freq)
 		elif 'xbee' in sys.platform:
 			return I2C(id=1, freq=freq)
 		else:
@@ -55,8 +60,8 @@ def _connectToI2CBus(freq=400000):
 		print('error: failed to connect to i2c bus')
 	return None
 
-def _connect_to_i2c_bus():
-	return _connectToI2CBus()
+def _connect_to_i2c_bus(*args, **argk):
+	return _connectToI2CBus(*args, **argk)
 
 class MicroPythonI2C(I2CDriver):
 
@@ -64,8 +69,12 @@ class MicroPythonI2C(I2CDriver):
 	name = _PLATFORM_NAME
 	_i2cbus = None
 
-	def __init__(self):
+	def __init__(self, sda=18, scl=19, freq=100000, *args, **argk):
 		I2CDriver.__init__(self) # init super
+
+		self._sda = sda
+		self._scl = scl
+		self._freq = freq
 
 	@classmethod
 	def isPlatform(cls):
@@ -88,7 +97,7 @@ class MicroPythonI2C(I2CDriver):
 
 		if(name == "i2cbus"):
 			if( self._i2cbus == None):
-				self._i2cbus = _connectToI2CBus()
+				self._i2cbus = _connectToI2CBus(sda=self._sda, scl=self._scl, freq=self._freq)
 			return self._i2cbus
 
 		else:
@@ -151,19 +160,12 @@ class MicroPythonI2C(I2CDriver):
 	def write_block(self, address, commandCode, value):
 		return self.writeBlock(address, commandCode, value)
 
-	@classmethod
-	def isDeviceConnected(cls, devAddress):
-		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus()
-		
-		if cls._i2cbus == None:
-			return False
-		
+	def isDeviceConnected(self, devAddress):
 		isConnected = False
 		try:
 			# Try to write nothing to the device
 			# If it throws an I/O error - the device isn't connected
-			cls._i2cbus.writeto(devAddress, bytearray())
+			self.i2cbus.writeto(devAddress, bytearray())
 			isConnected = True
 		except Exception as ee:
 			print("Error connecting to Device: %X, %s" % (devAddress, ee))
@@ -171,23 +173,13 @@ class MicroPythonI2C(I2CDriver):
 		
 		return isConnected
 
-	@classmethod
-	def is_device_connected(cls, devAddress):
-		return cls.isDeviceConnected(devAddress)
+	def is_device_connected(self, devAddress):
+		return self.isDeviceConnected(devAddress)
 
-	@classmethod
-	def ping(cls, devAddress):
-		return cls.isDeviceConnected(devAddress)
+	def ping(self, devAddress):
+		return self.isDeviceConnected(devAddress)
 
 	# scan -------------------------------------------------------------------
-	@classmethod
-	def scan(cls):
+	def scan(self):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
-	
-		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus()
-	
-		if cls._i2cbus == None:
-			return []
-			
-		return cls._i2cbus.scan()
+		return self.i2cbus.scan()

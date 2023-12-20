@@ -78,7 +78,7 @@ class I2CDriver(object):
 	# stubs
 	name = 'qwiic I2C abstract base class'
 
-	def __init__(self):
+	def __init__(self, *args, **argk):
 		pass
 
 
@@ -313,8 +313,7 @@ class I2CDriver(object):
 		"""
 		return None
 
-	@classmethod
-	def isDeviceConnected(cls, devAddress):
+	def isDeviceConnected(self, devAddress):
 		"""
 			Determines if a particular device (at the provided address)
 			is connected to the bus.
@@ -327,8 +326,7 @@ class I2CDriver(object):
 		"""
 		return None
 
-	@classmethod
-	def is_device_connected(cls, devAddress):
+	def is_device_connected(self, devAddress):
 		"""
 			Determines if a particular device (at the provided address)
 			is connected to the bus.
@@ -341,8 +339,7 @@ class I2CDriver(object):
 		"""
 		return None
 
-	@classmethod
-	def ping(cls, devAddress):
+	def ping(self, devAddress):
 		"""
 			Determines if a particular device (at the provided address)
 			is connected to the bus.
@@ -355,8 +352,7 @@ class I2CDriver(object):
 		"""
 		return None
 
-	@classmethod
-	def scan(cls):
+	def scan(self):
 		"""
 			Used to scan the I2C bus, returning a list of I2C address attached to the computer.
 

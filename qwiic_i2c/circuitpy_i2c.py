@@ -49,7 +49,7 @@ _PLATFORM_NAME = "CircuitPython"
 # Attempts to fail elegantly. Put this in a central place to support 
 # error handling  -- especially on non-circuitpy platforms
 #
-def _connectToI2CBus():
+def _connectToI2CBus(sda=None, scl=None, freq=100000, *args, **argk):
 
 	try:
 		import board
@@ -65,10 +65,12 @@ def _connectToI2CBus():
 	# Connect - catch errors 
 
 	try:
-		if hasattr(board, "STEMMA_I2C"):
+		if sda != None and scl != None:
+			daBus = busio.I2C(scl, sda, frequency=freq)
+		elif hasattr(board, "STEMMA_I2C"):
 			daBus = board.STEMMA_I2C()
 		else:
-			daBus = busio.I2C(board.SCL, board.SDA)
+			daBus = busio.I2C(board.SCL, board.SDA, frequency=freq)
 	except Exception as ee:
 		if type(ee) is RuntimeError:
 			print("Error:\tUnable to connect to I2C bus. %s" % (ee))
@@ -85,8 +87,8 @@ def _connectToI2CBus():
 
 	return daBus
 
-def _connect_to_i2c_bus():
-	return _connectToI2CBus()
+def _connect_to_i2c_bus(*args, **argk):
+	return _connectToI2CBus(*args, **argk)
 
 # notes on determining CirPy platform
 #
@@ -100,11 +102,15 @@ class CircuitPythonI2C(I2CDriver):
 
 	_i2cbus = None
 
-	def __init__(self):
+	def __init__(self, sda=None, scl=None, freq=100000, *args, **argk):
 
 		# Call the super class. The super calss will use default values if not 
 		# proviced
 		I2CDriver.__init__(self)
+
+		self._sda = sda
+		self._scl = scl
+		self._freq = freq
 
 	# Okay, are we running on a circuit py system?
 	@classmethod
@@ -128,7 +134,7 @@ class CircuitPythonI2C(I2CDriver):
 
 		if(name == "i2cbus"):
 			if( self._i2cbus == None):
-				self._i2cbus = _connectToI2CBus()
+				self._i2cbus = _connectToI2CBus(sda=self._sda, scl=self._scl, freq=self._freq)
 			return self._i2cbus
 
 		else:
@@ -284,35 +290,25 @@ class CircuitPythonI2C(I2CDriver):
 	def write_block(self, address, commandCode, value):
 		return self.writeBlock(address, commandCode, value)
 
-	@classmethod
-	def isDeviceConnected(cls, devAddress):
-		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus()
-		if cls._i2cbus == None:
-			return False
-		if not cls._i2cbus.try_lock():
-			return False
-
+	def isDeviceConnected(self, devAddress):
 		isConnected = False
 		try:
 			# Try to write nothing to the device
 			# If it throws an I/O error - the device isn't connected
-			cls._i2cbus.writeto(devAddress, bytearray())
+			self.i2cbus.writeto(devAddress, bytearray())
 			isConnected = True
 		except Exception as ee:
 			print("Error connecting to Device: %X, %s" % (devAddress, ee))
 			pass
 		finally:
-			cls._i2cbus.unlock()
+			self.i2cbus.unlock()
 
 		return isConnected
 
-	@classmethod
-	def is_device_connected(cls, devAddress):
+	def is_device_connected(self, devAddress):
 		return cls.isDeviceConnected(devAddress)
 
-	@classmethod
-	def ping(cls, devAddress):
+	def ping(self, devAddress):
 		return cls.isDeviceConnected(devAddress)
 
 	#-----------------------------------------------------------------------
@@ -320,17 +316,6 @@ class CircuitPythonI2C(I2CDriver):
 	#
 	# Scans the I2C bus and returns a list of addresses that have a devices connected
 	#
-	@classmethod
-	def scan(cls):
+	def scan(self):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
-
-		if cls._i2cbus == None:
-			cls._i2cbus = _connectToI2CBus()
-		if cls._i2cbus == None:
-			return []
-		if not cls._i2cbus.try_lock():
-			return []
-
-		result = cls._i2cbus.scan()
-		cls._i2cbus.unlock()
-		return result
+		return self.i2cbus.scan()

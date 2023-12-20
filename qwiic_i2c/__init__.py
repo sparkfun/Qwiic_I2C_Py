@@ -91,7 +91,7 @@ _theDriver = None
 #
 # If no driver is found, a None value is returned
 
-def getI2CDriver():
+def getI2CDriver(*args, **argk):
 	"""
 	.. function:: getI2CDriver()
 
@@ -119,13 +119,13 @@ def getI2CDriver():
 		# Does this class/driverd support this platform?
 		if driverClass.isPlatform():
 
-			_theDriver = driverClass()
+			_theDriver = driverClass(*args, **argk)
 			# Yes - return the driver object
 			return _theDriver
 
 	return None
 
-def get_i2c_driver():
+def get_i2c_driver(*args, **argk):
 	"""
 	.. function:: get_i2c_driver()
 
@@ -140,12 +140,12 @@ def get_i2c_driver():
 		>>> i2cDriver = qwiic_i2c.get_i2c_driver()
 		>>> myData = i2cDriver.readByte(0x73, 0x34)
 	"""
-	return getI2CDriver()
+	return getI2CDriver(*args, **argk)
 
 #-------------------------------------------------
 # Method to determine if a particular device (at the provided address)
 # is connected to the bus.
-def isDeviceConnected(devAddress):
+def isDeviceConnected(devAddress, *args, **argk):
 	"""
 	.. function:: isDeviceConnected()
 
@@ -158,7 +158,7 @@ def isDeviceConnected(devAddress):
 		:rtype: bool
 
 	"""
-	i2c = getI2CDriver()
+	i2c = getI2CDriver(*args, **argk)
 
 	if not i2c:
 		print("Unable to load the I2C driver for this device")
@@ -166,7 +166,7 @@ def isDeviceConnected(devAddress):
 	
 	return i2c.isDeviceConnected(devAddress)
 
-def is_device_connected(devAddress):
+def is_device_connected(devAddress, *args, **argk):
 	"""
 	.. function:: is_device_connected()
 
@@ -179,12 +179,12 @@ def is_device_connected(devAddress):
 		:rtype: bool
 
 	"""
-	return isDeviceConnected(devAddress)
+	return isDeviceConnected(devAddress, *args, **argk)
 
 #-------------------------------------------------
 # Method to determine if a particular device (at the provided address)
 # is connected to the bus.
-def ping(devAddress):
+def ping(devAddress, *args, **argk):
 	"""
 	.. function:: ping()
 
@@ -197,4 +197,4 @@ def ping(devAddress):
 		:rtype: bool
 
 	"""
-	return isDeviceConnected(devAddress)
+	return isDeviceConnected(devAddress, *args, **argk)
