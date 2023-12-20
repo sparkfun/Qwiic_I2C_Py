@@ -84,8 +84,6 @@ for module_name, class_name in _supported_platforms.items():
 	except:
 		pass
 
-_theDriver = None
-
 #-------------------------------------------------
 # Exported method to get the I2C driver for the execution plaform. 
 #
@@ -107,21 +105,13 @@ def getI2CDriver(*args, **argk):
 		>>> myData = i2cDriver.readByte(0x73, 0x34)
 	"""
 
-	global _theDriver
-
-	if _theDriver != None:
-		return _theDriver
-
-	
-
 	for driverClass in _drivers:
 
 		# Does this class/driverd support this platform?
 		if driverClass.isPlatform():
 
-			_theDriver = driverClass(*args, **argk)
 			# Yes - return the driver object
-			return _theDriver
+			return driverClass(*args, **argk)
 
 	return None
 
