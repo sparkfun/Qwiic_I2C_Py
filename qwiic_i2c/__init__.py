@@ -84,11 +84,12 @@ for module_name, class_name in _supported_platforms.items():
 	except:
 		pass
 
+_default_driver = None
+
 #-------------------------------------------------
 # Exported method to get the I2C driver for the execution plaform. 
 #
 # If no driver is found, a None value is returned
-
 def getI2CDriver(*args, **argk):
 	"""
 	.. function:: getI2CDriver()
@@ -105,14 +106,25 @@ def getI2CDriver(*args, **argk):
 		>>> myData = i2cDriver.readByte(0x73, 0x34)
 	"""
 
+	# If no parameters are provided, return the default driver if we have it
+	global _default_driver
+	if len(argk) == 0 and _default_driver != None:
+		return _default_driver
+	
+	# Loop through all the drivers to find the one for this platform
 	for driverClass in _drivers:
-
-		# Does this class/driverd support this platform?
 		if driverClass.isPlatform():
+			# Found it!
+			driver = driverClass(*args, **argk)
 
-			# Yes - return the driver object
-			return driverClass(*args, **argk)
-
+			# If no parameters are provided, set this as the default driver
+			if len(argk) == 0:
+				_default_driver = driver
+			
+			# And return it
+			return driver
+	
+	# If we get here, we didn't find a driver for this platform
 	return None
 
 def get_i2c_driver(*args, **argk):
