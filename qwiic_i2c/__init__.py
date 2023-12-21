@@ -84,14 +84,13 @@ for module_name, class_name in _supported_platforms.items():
 	except:
 		pass
 
-_theDriver = None
+_default_driver = None
 
 #-------------------------------------------------
 # Exported method to get the I2C driver for the execution plaform. 
 #
 # If no driver is found, a None value is returned
-
-def getI2CDriver():
+def getI2CDriver(*args, **argk):
 	"""
 	.. function:: getI2CDriver()
 
@@ -107,28 +106,48 @@ def getI2CDriver():
 		>>> myData = i2cDriver.readByte(0x73, 0x34)
 	"""
 
-	global _theDriver
-
-	if _theDriver != None:
-		return _theDriver
-
+	# If no parameters are provided, return the default driver if we have it
+	global _default_driver
+	if len(argk) == 0 and _default_driver != None:
+		return _default_driver
 	
-
+	# Loop through all the drivers to find the one for this platform
 	for driverClass in _drivers:
-
-		# Does this class/driverd support this platform?
 		if driverClass.isPlatform():
+			# Found it!
+			driver = driverClass(*args, **argk)
 
-			_theDriver = driverClass()
-			# Yes - return the driver object
-			return _theDriver
-
+			# If no parameters are provided, set this as the default driver
+			if len(argk) == 0:
+				_default_driver = driver
+			
+			# And return it
+			return driver
+	
+	# If we get here, we didn't find a driver for this platform
 	return None
+
+def get_i2c_driver(*args, **argk):
+	"""
+	.. function:: get_i2c_driver()
+
+		Returns the qwiic I2C driver object for current platform.
+
+		:return: A qwiic I2C driver object for the current platform.
+		:rtype: object
+
+		:example:
+
+		>>> import qwiic_i2c
+		>>> i2cDriver = qwiic_i2c.get_i2c_driver()
+		>>> myData = i2cDriver.readByte(0x73, 0x34)
+	"""
+	return getI2CDriver(*args, **argk)
 
 #-------------------------------------------------
 # Method to determine if a particular device (at the provided address)
 # is connected to the bus.
-def isDeviceConnected(devAddress):
+def isDeviceConnected(devAddress, *args, **argk):
 	"""
 	.. function:: isDeviceConnected()
 
@@ -141,22 +160,43 @@ def isDeviceConnected(devAddress):
 		:rtype: bool
 
 	"""
-	i2c = getI2CDriver()
+	i2c = getI2CDriver(*args, **argk)
 
 	if not i2c:
 		print("Unable to load the I2C driver for this device")
 		return False
 	
-	isConnected = False
-	try:
-		# Try to write a byte to the device, command 0x0
-		# If it throws an I/O error - the device isn't connected
-		with i2c as i2cDriver:
-			i2cDriver.writeCommand(devAddress, 0x0)
+	return i2c.isDeviceConnected(devAddress)
 
-			isConnected = True
-	except Exception as ee:
-		print("Error connecting to Device: %X, %s" % (devAddress, ee))
-		pass
+def is_device_connected(devAddress, *args, **argk):
+	"""
+	.. function:: is_device_connected()
 
-	return isConnected
+		Function to determine if a particular device (at the provided address)
+		is connected to the bus.
+
+		:param devAddress: The I2C address of the device to check
+
+		:return: True if the device is connected, otherwise False.
+		:rtype: bool
+
+	"""
+	return isDeviceConnected(devAddress, *args, **argk)
+
+#-------------------------------------------------
+# Method to determine if a particular device (at the provided address)
+# is connected to the bus.
+def ping(devAddress, *args, **argk):
+	"""
+	.. function:: ping()
+
+		Function to determine if a particular device (at the provided address)
+		is connected to the bus.
+
+		:param devAddress: The I2C address of the device to check
+
+		:return: True if the device is connected, otherwise False.
+		:rtype: bool
+
+	"""
+	return isDeviceConnected(devAddress, *args, **argk)
