@@ -110,6 +110,8 @@ class LinuxI2C(I2CDriver):
 
 		self._iBus = iBus
 
+		self._i2cbus = _connectToI2CBus(self._iBus)
+
 	# Okay, are we running on a Linux system?
 	@classmethod
 	def isPlatform(cls):
@@ -129,8 +131,6 @@ class LinuxI2C(I2CDriver):
 	def __getattr__(self, name):
 
 		if(name == "i2cbus"):
-			if( self._i2cbus == None):
-				self._i2cbus = _connectToI2CBus(self._iBus)
 			return self._i2cbus
 
 		else:
@@ -158,7 +158,7 @@ class LinuxI2C(I2CDriver):
 		# add some error handling and recovery....
 		for i in range(_retry_count):
 			try:
-				data = self.i2cbus.read_word_data(address, commandCode)
+				data = self._i2cbus.read_word_data(address, commandCode)
 			
 				break # break if try succeeds
 
@@ -178,9 +178,9 @@ class LinuxI2C(I2CDriver):
 		for i in range(_retry_count):
 			try:
 				if commandCode == None:
-					data = self.i2cbus.read_byte(address)
+					data = self._i2cbus.read_byte(address)
 				elif commandCode != None:
-					data = self.i2cbus.read_byte_data(address, commandCode)
+					data = self._i2cbus.read_byte_data(address, commandCode)
 			
 				break # break if try succeeds
 
@@ -199,7 +199,7 @@ class LinuxI2C(I2CDriver):
 		data = 0
 		for i in range(_retry_count):
 			try:
-				data = self.i2cbus.read_i2c_block_data(address, commandCode, nBytes)
+				data = self._i2cbus.read_i2c_block_data(address, commandCode, nBytes)
 			
 				break # break if try succeeds
 
@@ -224,21 +224,21 @@ class LinuxI2C(I2CDriver):
 
 	def writeCommand(self, address, commandCode):
 
-		return self.i2cbus.write_byte(address, commandCode)
+		return self._i2cbus.write_byte(address, commandCode)
 
 	def write_command(self, address, commandCode):
 		return self.writeCommand(address, commandCode)
 
 	def writeWord(self, address, commandCode, value):
 
-		return self.i2cbus.write_word_data(address, commandCode, value)
+		return self._i2cbus.write_word_data(address, commandCode, value)
 
 	def write_word(self, address, commandCode, value):
 		return self.writeWord(address, commandCode, value)
 
 	def writeByte(self, address, commandCode, value):
 
-		return self.i2cbus.write_byte_data(address, commandCode, value)
+		return self._i2cbus.write_byte_data(address, commandCode, value)
 
 	def write_byte(self, address, commandCode, value):
 		return self.writeByte(address, commandCode, value)
@@ -248,7 +248,7 @@ class LinuxI2C(I2CDriver):
 		# if value is a bytearray - convert to list of ints (it's what 
 		# required by this call)
 		tmpVal = list(value) if type(value) == bytearray else value
-		self.i2cbus.write_i2c_block_data(address, commandCode, tmpVal)
+		self._i2cbus.write_i2c_block_data(address, commandCode, tmpVal)
 
 	def write_block(self, address, commandCode, value):
 		return self.writeBlock(address, commandCode, value)
@@ -258,7 +258,7 @@ class LinuxI2C(I2CDriver):
 		try:
 			# Try to write nothing to the device
 			# If it throws an I/O error - the device isn't connected
-			self.i2cbus.write_quick(devAddress)
+			self._i2cbus.write_quick(devAddress)
 			isConnected = True
 		except:
 			pass
@@ -312,7 +312,7 @@ class LinuxI2C(I2CDriver):
 		# Read Register
 		for i in range(_retry_count):
 			try:
-				self.i2cbus.i2c_rdwr(write, read)
+				self._i2cbus.i2c_rdwr(write, read)
 			
 				break # break if try succeeds
 

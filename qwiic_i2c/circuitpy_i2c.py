@@ -112,6 +112,8 @@ class CircuitPythonI2C(I2CDriver):
 		self._scl = scl
 		self._freq = freq
 
+		self._i2cbus = _connectToI2CBus(sda=self._sda, scl=self._scl, freq=self._freq)
+
 	# Okay, are we running on a circuit py system?
 	@classmethod
 	def isPlatform(cls):
@@ -133,8 +135,6 @@ class CircuitPythonI2C(I2CDriver):
 	def __getattr__(self, name):
 
 		if(name == "i2cbus"):
-			if( self._i2cbus == None):
-				self._i2cbus = _connectToI2CBus(sda=self._sda, scl=self._scl, freq=self._freq)
 			return self._i2cbus
 
 		else:
@@ -156,18 +156,18 @@ class CircuitPythonI2C(I2CDriver):
 	# read Data Command
 
 	def readWord(self, address, commandCode):
-		if not self.i2cbus.try_lock():
+		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 
 		buffer = bytearray(2)
 
 		try:
-			self.i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+			self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
 		except Exception as e:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 			raise e
 		else:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 
 		# build and return a word
 		return (buffer[1] << 8 ) | buffer[0]
@@ -177,18 +177,18 @@ class CircuitPythonI2C(I2CDriver):
 
 	#----------------------------------------------------------
 	def readByte(self, address, commandCode):
-		if not self.i2cbus.try_lock():
+		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 
 		buffer = bytearray(1)
 
 		try:
-			self.i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+			self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
 		except Exception as e:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 			raise e
 		else:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 
 		return buffer[0]
 
@@ -197,18 +197,18 @@ class CircuitPythonI2C(I2CDriver):
 
 	#----------------------------------------------------------
 	def readBlock(self, address, commandCode, nBytes):
-		if not self.i2cbus.try_lock():
+		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 
 		buffer = bytearray(nBytes)
 
 		try:
-			self.i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+			self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
 		except Exception as e:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 			raise e
 		else:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 
 		return list(buffer)
 
@@ -224,23 +224,23 @@ class CircuitPythonI2C(I2CDriver):
 	#
 
 	def writeCommand(self, address, commandCode):
-		if not self.i2cbus.try_lock():
+		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 		
 		try:
-			self.i2cbus.writeto(address, bytes([commandCode]))
+			self._i2cbus.writeto(address, bytes([commandCode]))
 		except Exception as e:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 			raise e
 		else:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 
 	def write_command(self, address, commandCode):
 		return self.writeCommand(address, commandCode)
 
 	#----------------------------------------------------------
 	def writeWord(self, address, commandCode, value):
-		if not self.i2cbus.try_lock():
+		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 
 		buffer = [0, 0]
@@ -248,62 +248,62 @@ class CircuitPythonI2C(I2CDriver):
 		buffer[1] = (value >> 8) & 0xFF
 
 		try:
-			self.i2cbus.writeto(address, bytes([commandCode] + buffer))
+			self._i2cbus.writeto(address, bytes([commandCode] + buffer))
 		except Exception as e:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 			raise e
 		else:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 
 	def write_word(self, address, commandCode, value):
 		return self.writeWord(address, commandCode, value)
 
 	#----------------------------------------------------------
 	def writeByte(self, address, commandCode, value):
-		if not self.i2cbus.try_lock():
+		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 		
 		try:
-			self.i2cbus.writeto(address, bytes([commandCode] + [value]))
+			self._i2cbus.writeto(address, bytes([commandCode] + [value]))
 		except Exception as e:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 			raise e
 		else:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 
 	def write_byte(self, address, commandCode, value):
 		return self.writeByte(address, commandCode, value)
 
 	#----------------------------------------------------------
 	def writeBlock(self, address, commandCode, value):
-		if not self.i2cbus.try_lock():
+		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 		
 		try:
-			self.i2cbus.writeto(address, bytes([commandCode] + value))
+			self._i2cbus.writeto(address, bytes([commandCode] + value))
 		except Exception as e:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 			raise e
 		else:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 
 	def write_block(self, address, commandCode, value):
 		return self.writeBlock(address, commandCode, value)
 
 	def isDeviceConnected(self, devAddress):
-		if not self.i2cbus.try_lock():
+		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 		
 		isConnected = False
 		try:
 			# Try to write nothing to the device
 			# If it throws an I/O error - the device isn't connected
-			self.i2cbus.writeto(devAddress, bytearray())
+			self._i2cbus.writeto(devAddress, bytearray())
 			isConnected = True
 		except:
 			pass
 		finally:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 
 		return isConnected
 
@@ -320,15 +320,15 @@ class CircuitPythonI2C(I2CDriver):
 	#
 	def scan(self):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
-		if not self.i2cbus.try_lock():
+		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 		
 		try:
-			devices = self.i2cbus.scan()
+			devices = self._i2cbus.scan()
 		except Exception as e:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 			raise e
 		else:
-			self.i2cbus.unlock()
+			self._i2cbus.unlock()
 		
 		return devices

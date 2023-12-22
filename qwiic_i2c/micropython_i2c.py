@@ -76,6 +76,8 @@ class MicroPythonI2C(I2CDriver):
 		self._scl = scl
 		self._freq = freq
 
+		self._i2cbus = _connectToI2CBus(sda=self._sda, scl=self._scl, freq=self._freq)
+
 	@classmethod
 	def isPlatform(cls):
 		try:
@@ -96,8 +98,6 @@ class MicroPythonI2C(I2CDriver):
 	def __getattr__(self, name):
 
 		if(name == "i2cbus"):
-			if( self._i2cbus == None):
-				self._i2cbus = _connectToI2CBus(sda=self._sda, scl=self._scl, freq=self._freq)
 			return self._i2cbus
 
 		else:
@@ -117,45 +117,45 @@ class MicroPythonI2C(I2CDriver):
 
 	# read commands ----------------------------------------------------------
 	def readWord(self, address, commandCode):
-		buffer = self.i2cbus.readfrom_mem(address, commandCode, 2)
+		buffer = self._i2cbus.readfrom_mem(address, commandCode, 2)
 		return (buffer[1] << 8 ) | buffer[0]
 
 	def read_word(self, address, commandCode):
 		return self.readWord(address, commandCode)
 
 	def readByte(self, address, commandCode):
-		return self.i2cbus.readfrom_mem(address, commandCode, 1)[0]
+		return self._i2cbus.readfrom_mem(address, commandCode, 1)[0]
 
 	def read_byte(self, address, commandCode = None):
 		return self.readByte(address, commandCode)
 
 	def readBlock(self, address, commandCode, nBytes):
-		return self.i2cbus.readfrom_mem(address, commandCode, nBytes)
+		return self._i2cbus.readfrom_mem(address, commandCode, nBytes)
 
 	def read_block(self, address, commandCode, nBytes):
 		return self.readBlock(address, commandCode, nBytes)
 
 	# write commands----------------------------------------------------------
 	def writeCommand(self, address, commandCode):
-		self.i2cbus.writeto(address, commandCode.to_bytes(1, 'little'))
+		self._i2cbus.writeto(address, commandCode.to_bytes(1, 'little'))
 
 	def write_command(self, address, commandCode):
 		return self.writeCommand(address, commandCode)
 
 	def writeWord(self, address, commandCode, value):
-		self.i2cbus.writeto_mem(address, commandCode, value.to_bytes(2, 'little'))
+		self._i2cbus.writeto_mem(address, commandCode, value.to_bytes(2, 'little'))
 
 	def write_word(self, address, commandCode, value):
 		return self.writeWord(address, commandCode, value)
 
 	def writeByte(self, address, commandCode, value):
-		self.i2cbus.writeto_mem(address, commandCode, value.to_bytes(1, 'little'))
+		self._i2cbus.writeto_mem(address, commandCode, value.to_bytes(1, 'little'))
 
 	def write_byte(self, address, commandCode, value):
 		return self.writeByte(address, commandCode, value)
 
 	def writeBlock(self, address, commandCode, value):
-		self.i2cbus.writeto_mem(address, commandCode, bytes(value))
+		self._i2cbus.writeto_mem(address, commandCode, bytes(value))
 
 	def write_block(self, address, commandCode, value):
 		return self.writeBlock(address, commandCode, value)
@@ -165,7 +165,7 @@ class MicroPythonI2C(I2CDriver):
 		try:
 			# Try to write nothing to the device
 			# If it throws an I/O error - the device isn't connected
-			self.i2cbus.writeto(devAddress, bytearray())
+			self._i2cbus.writeto(devAddress, bytearray())
 			isConnected = True
 		except:
 			pass
@@ -181,4 +181,4 @@ class MicroPythonI2C(I2CDriver):
 	# scan -------------------------------------------------------------------
 	def scan(self):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
-		return self.i2cbus.scan()
+		return self._i2cbus.scan()
