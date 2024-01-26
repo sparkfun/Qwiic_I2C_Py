@@ -91,18 +91,46 @@ This package is used extensively by the python modules for the SparkFun qwiic ec
 General package use examples:
 
 ```python
+# Import the package
 import qwiic_i2c
-connectedDevices = i2cDriver.scan()
-if myDeviceAddress in connectedDevices:
-	with qwiic_i2c.getI2CDriver() as i2c:
-		i2c.writeByte(myDeviceAddress, register, 0x3F)
-```
 
-```python
-import qwiic_i2c
->>> if qwiic_i2c.isDeviceConnected(myDeviceAddress):
-        with qwiic_i2c.getI2CDriver() as i2c:
-                i2c.writeByte(myDeviceAddress, register, 0x3F)
+# Get the default I2C bus
+my_bus = qwiic_i2c.get_i2c_driver()
+
+# Linux (Raspberry Pi) - Specify I2C bus index
+my_bus = qwiic_i2c.get_i2c_driver(iBus = 1)
+
+# MicroPython and CircuitPython - Specify SDA and SCL pins, and frequency
+my_bus = qwiic_i2c.get_i2c_driver(sda=0, scl=1, freq=100000)
+
+# Perform scan of I2C bus
+scan_list = my_bus.scan()
+print("Bus scan:", scan_list)
+
+# Check if a device with the specified address is connected
+ping_result = my_bus.ping(device_address)
+print("Device is connected:", ping_result)
+
+# Read one byte from the specified address
+read_data = my_bus.read_byte(device_address, register_address)
+print("Read byte:", read_data)
+
+# Read one word (2 bytes) from the specified address
+read_data = my_bus.read_word(device_address, register_address)
+print("Read word:", read_data)
+
+# Read several bytes from the specified address
+read_data = my_bus.read_block(device_address, register_address, num_bytes_to_read)
+print("Read block:", read_data)
+
+# Write one byte to the specified address
+my_bus.write_byte(device_address, register_address, write_data)
+
+# Write one word (2 bytes) to the specified address
+my_bus.write_word(device_address, register_address, write_data)
+
+# Write several bytes to the specified address
+my_bus.write_block(device_address, register_address, write_data)
 ```
 
 <p align="center">
