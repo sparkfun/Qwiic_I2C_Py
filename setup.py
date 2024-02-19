@@ -41,10 +41,6 @@ import io
 
 here = path.abspath(path.dirname(__file__))
 
-# get the log description from the decription file
-with io.open(path.join(here, "DESCRIPTION.rst"), encoding="utf-8") as f:
-    long_description = f.read()
-
 setup_requires = []
 setup_requires.append("smbus2")
 
@@ -58,7 +54,7 @@ setup(
     version='1.0.0',
 
     description='SparkFun Electronics qwiic I2C library',
-    long_description=long_description,
+    long_description='This package provides cross platform I2C support for the qwiic python packages',
 
     # The project's main homepage.
     url='http://www.sparkfun.com/qwiic',
