@@ -179,7 +179,7 @@ class CircuitPythonI2C(I2CDriver):
 		return self.readWord(address, commandCode)
 
 	#----------------------------------------------------------
-	def readByte(self, address, commandCode):
+	def readByte(self, address, commandCode = None):
 		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 
