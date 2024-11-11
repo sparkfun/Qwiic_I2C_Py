@@ -162,7 +162,10 @@ class CircuitPythonI2C(I2CDriver):
 		buffer = bytearray(2)
 
 		try:
-			self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+			if (commandCode == None):
+				self._i2cbus.readfrom_into(address, buffer) # TODO: not yet validated...
+			else:
+				self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
 		except Exception as e:
 			self._i2cbus.unlock()
 			raise e
@@ -183,7 +186,10 @@ class CircuitPythonI2C(I2CDriver):
 		buffer = bytearray(1)
 
 		try:
-			self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+			if (commandCode == None):
+				self._i2cbus.readfrom_into(address, buffer) # TODO: not yet validated...
+			else:
+				self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
 		except Exception as e:
 			self._i2cbus.unlock()
 			raise e
@@ -203,7 +209,10 @@ class CircuitPythonI2C(I2CDriver):
 		buffer = bytearray(nBytes)
 
 		try:
-			self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+			if (commandCode == None):
+				self._i2cbus.readfrom_into(address, buffer) # TODO: not yet validated...
+			else:
+				self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
 		except Exception as e:
 			self._i2cbus.unlock()
 			raise e
