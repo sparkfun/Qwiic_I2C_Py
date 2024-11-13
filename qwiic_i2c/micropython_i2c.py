@@ -192,3 +192,24 @@ class MicroPythonI2C(I2CDriver):
 	def scan(self):
 		""" Returns a list of addresses for the devices connected to the I2C bus."""
 		return self._i2cbus.scan()
+	
+	#-----------------------------------------------------------------------
+	# Custom method for reading +8-bit register using `i2c_msg` from `smbus2`
+	#
+	# Designed to have same operation as the __i2c_rdwr method in linux_i2c.py
+	def __i2c_rdwr__(self, address, write_message, read_nbytes):
+		"""
+		Custom method used for 16-bit (or greater) register reads
+		:param address: 7-bit address
+		:param write_message: list with register(s) to read
+		:param read_nbytes: number of bytes to be read
+
+		:return: response of read transaction
+		:rtype: list
+		"""
+
+		# micropython I2C doesn't have a corresponding "i2c_rdwr" function like smbus2, so we will make our own by passing stop=False to not send stop bits between repeated transfers
+		self._i2cbus.writeto(address, bytes(write_message), False)
+		return self._i2cbus.readfrom(address, read_nbytes)
+
+

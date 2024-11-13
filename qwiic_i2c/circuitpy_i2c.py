@@ -341,3 +341,20 @@ class CircuitPythonI2C(I2CDriver):
 			self._i2cbus.unlock()
 		
 		return devices
+	
+	#-----------------------------------------------------------------------
+	# Custom method for reading +8-bit register using `i2c_msg` from `smbus2`
+	#
+	# Designed to have same operation as the __i2c_rdwr method in linux_i2c.py
+	def __i2c_rdwr__(self, address, write_message, read_nbytes):
+		"""
+		Custom method used for 16-bit (or greater) register reads
+		:param address: 7-bit address
+		:param write_message: list with register(s) to read
+		:param read_nbytes: number of bytes to be read
+
+		:return: response of read transaction
+		:rtype: list
+		"""
+		self._i2cbus.readBlock(address, write_message, read_nbytes)
+		
