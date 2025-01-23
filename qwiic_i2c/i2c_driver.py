@@ -313,7 +313,7 @@ class I2CDriver(object):
 		"""
 		return None
 	
-	def readWriteBlock(self, address, writeBytes, readNBytes):
+	def writeReadBlock(self, address, writeBytes, readNBytes):
 		""" 
 			Called to write a block of bytes to a device, send no stop bit, and then read a block of bytes.
 
@@ -327,7 +327,7 @@ class I2CDriver(object):
 		"""
 		return None
 	
-	def read_write_block(self, address, writeBytes, readNBytes):
+	def write_read_block(self, address, writeBytes, readNBytes):
 		""" 
 			Called to write a block of bytes to a device, send no stop bit, and then read a block of bytes.
 

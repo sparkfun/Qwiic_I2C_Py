@@ -170,11 +170,11 @@ class MicroPythonI2C(I2CDriver):
 	def write_block(self, address, commandCode, value):
 		return self.writeBlock(address, commandCode, value)
 
-	def readWriteBlock(self, address, writeBytes, readNBytes):
+	def writeReadBlock(self, address, writeBytes, readNBytes):
 		return self.__i2c_rdwr__(address, writeBytes, readNBytes)
 	
-	def read_write_block(self, address, writeBytes, readNBytes):
-		return self.readWriteBlock(address, writeBytes, readNBytes)
+	def write_read_block(self, address, writeBytes, readNBytes):
+		return self.writeReadBlock(address, writeBytes, readNBytes)
 
 	def isDeviceConnected(self, devAddress):
 		isConnected = False
