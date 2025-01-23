@@ -312,6 +312,35 @@ class I2CDriver(object):
 
 		"""
 		return None
+	
+	def readWriteBlock(self, address, writeBytes, readNBytes):
+		""" 
+			Called to write a block of bytes to a device, send no stop bit, and then read a block of bytes.
+
+			:param address: The I2C address of the device to read from
+			:param writeBytes: A list of bytes (ints) to write on the I2C bus.
+			:param readNBytes: The number of bytes to read from the device
+
+			:return: A list of bytes read from the device.
+			:rtype: list
+
+		"""
+		return None
+	
+	def read_write_block(self, address, writeBytes, readNBytes):
+		""" 
+			Called to write a block of bytes to a device, send no stop bit, and then read a block of bytes.
+
+			:param address: The I2C address of the device to read from
+			:param writeBytes: A list of bytes (ints) to write on the I2C bus.
+			:param readNBytes: The number of bytes to read from the device
+
+			:return: A list of bytes read from the device.
+			:rtype: list
+
+		"""
+		return None
+
 
 	def isDeviceConnected(self, devAddress):
 		"""
