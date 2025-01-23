@@ -300,7 +300,21 @@ class CircuitPythonI2C(I2CDriver):
 		return self.writeBlock(address, commandCode, value)
 
 	def writeReadBlock(self, address, writeBytes, readNBytes):
-		return self.__i2c_rdwr__(address, writeBytes, readNBytes)
+		read_buffer = bytearray(readNBytes)
+
+		if not self._i2cbus.try_lock():
+			raise Exception("Unable to lock I2C bus")
+		
+		try:
+			self._i2cbus.writeto_then_readfrom(address, bytes(writeBytes), read_buffer)
+		except Exception as e:
+			self._i2cbus.unlock()
+			raise e
+		else:
+			self._i2cbus.unlock()
+
+		return list(read_buffer)
+		
 	
 	def write_read_block(self, address, writeBytes, readNBytes):
 		return self.writeReadBlock(address, writeBytes, readNBytes)
@@ -348,32 +362,3 @@ class CircuitPythonI2C(I2CDriver):
 		
 		return devices
 	
-	#-----------------------------------------------------------------------
-	# Custom method for reading +8-bit register using `i2c_msg` from `smbus2`
-	#
-	# Designed to have same operation as the __i2c_rdwr method in linux_i2c.py
-	def __i2c_rdwr__(self, address, write_message, read_nbytes):
-		"""
-		Custom method used for 16-bit (or greater) register reads
-		:param address: 7-bit address
-		:param write_message: list with register(s) to read
-		:param read_nbytes: number of bytes to be read
-
-		:return: response of read transaction
-		:rtype: list
-		"""
-		read_buffer = bytearray(read_nbytes)
-
-		if not self._i2cbus.try_lock():
-			raise Exception("Unable to lock I2C bus")
-		
-		try:
-			self._i2cbus.writeto_then_readfrom(address, bytes(write_message), read_buffer)
-		except Exception as e:
-			self._i2cbus.unlock()
-			raise e
-		else:
-			self._i2cbus.unlock()
-
-		return list(read_buffer)
-		
