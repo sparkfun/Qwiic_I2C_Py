@@ -151,6 +151,15 @@ class LinuxI2C(I2CDriver):
 #-------------------------------------------------------------------------	
 	# read Data Command
 
+	# Performs a general read of <nBytes> from the device at <address> without a command/register code
+	# Linux doesn't support this directly like CircuitPython and MicroPython, so we have to read byte by byte
+	def _read_no_command(self, address, nBytes):
+		data = [0] * nBytes
+		for i in range(nBytes):
+			data = self._i2cbus.read_byte(address)
+			data[i] = data
+		return data
+
 	def readWord(self, address, commandCode):
 
 		data = 0
@@ -158,7 +167,10 @@ class LinuxI2C(I2CDriver):
 		# add some error handling and recovery....
 		for i in range(_retry_count):
 			try:
-				data = self._i2cbus.read_word_data(address, commandCode)
+				if commandCode == None:
+					data = self._read_no_command(address, 2) # TODO: Check this, we may need to switch endianess
+				else:
+					data = self._i2cbus.read_word_data(address, commandCode)
 			
 				break # break if try succeeds
 
@@ -199,7 +211,10 @@ class LinuxI2C(I2CDriver):
 		data = 0
 		for i in range(_retry_count):
 			try:
-				data = self._i2cbus.read_i2c_block_data(address, commandCode, nBytes)
+				if commandCode == None:
+					data = self._read_no_command(address, nBytes)
+				else:
+					data = self._i2cbus.read_i2c_block_data(address, commandCode, nBytes)
 			
 				break # break if try succeeds
 
