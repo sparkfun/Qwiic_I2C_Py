@@ -356,5 +356,18 @@ class CircuitPythonI2C(I2CDriver):
 		:return: response of read transaction
 		:rtype: list
 		"""
-		self._i2cbus.readBlock(address, write_message, read_nbytes)
+		read_buffer = bytearray(read_nbytes)
+
+		if not self._i2cbus.try_lock():
+			raise Exception("Unable to lock I2C bus")
+		
+		try:
+			self._i2cbus.writeto_then_readfrom(address, bytes(write_message), read_buffer)
+		except Exception as e:
+			self._i2cbus.unlock()
+			raise e
+		else:
+			self._i2cbus.unlock()
+
+		return list(read_buffer)
 		
