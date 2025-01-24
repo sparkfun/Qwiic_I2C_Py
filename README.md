@@ -1,26 +1,12 @@
-Qwiic_I2C_Py
+![Qwiic I2C Python Package](docs/images/i2c-gh-banner-py.png "qwiic IC Python Package" )
+
+Sparkfun Qwiic I2C - Python Package
 ==============
 
-<p align="center">
-   <img src="https://cdn.sparkfun.com/assets/custom_pages/2/7/2/qwiic-logo-registered.jpg"  width=200>  
-   <img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png"  width=240>   
-</p>
-<p align="center">
-	<a href="https://pypi.org/project/sparkfun-qwiic-i2c/" alt="Package">
-		<img src="https://img.shields.io/pypi/pyversions/sparkfun_qwiic_i2c.svg" /></a>
-	<a href="https://github.com/sparkfun/Qwiic_I2C_Py/issues" alt="Issues">
-		<img src="https://img.shields.io/github/issues/sparkfun/Qwiic_I2C_Py.svg" /></a>
-	<a href="https://qwiic-i2c-py.readthedocs.io/en/latest/index.html" alt="Documentation">
-		<img src="https://readthedocs.org/projects/qwiic-i2c-py/badge/?version=latest&style=flat" /></a>
-	<a href="https://github.com/sparkfun/Qwiic_Proximity_Py/blob/master/LICENSE" alt="License">
-		<img src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
-	<a href="https://twitter.com/intent/follow?screen_name=sparkfun">
-        	<img src="https://img.shields.io/twitter/follow/sparkfun.svg?style=social&logo=twitter"
-           	 alt="follow on Twitter"></a>
-	
-</p>
-
-<img src="https://cdn.sparkfun.com/assets/custom_pages/2/7/2/qwiic-products-hooked-up.jpg"  align="right" width=340>
+![PyPi Version](https://img.shields.io/pypi/v/sparkfun_qwiic_i2c)
+![GitHub issues](https://img.shields.io/github/issues/sparkfun/qwiic_i2c_py)
+![License](https://img.shields.io/github/license/sparkfun/qwiic_i2c_py)
+![X](https://img.shields.io/twitter/follow/sparkfun)
 
 Python package to support multi platform I2C bus integrations for the SparkFun [qwiic ecosystem](https://www.sparkfun.com/qwiic)
 
