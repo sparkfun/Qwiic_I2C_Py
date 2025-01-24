@@ -126,7 +126,7 @@ class I2CDriver(object):
 			Called to read a word (16 bits) from a specific device.
 
 			:param address: The I2C address of the device to read from
-			:param commandCode: The "command" or register to read from 
+			:param commandCode: The "command" or register to read from, or `None` for no command
 
 			:return: Returns the read data
 			:rtype: integer - first 16 bits contain the read data. 
@@ -139,7 +139,7 @@ class I2CDriver(object):
 			Called to read a word (16 bits) from a specific device.
 
 			:param address: The I2C address of the device to read from
-			:param commandCode: The "command" or register to read from 
+			:param commandCode: The "command" or register to read from, or `None` for no command
 
 			:return: Returns the read data
 			:rtype: integer - first 16 bits contain the read data. 
@@ -152,7 +152,7 @@ class I2CDriver(object):
 			Called to read a byte (8 bits) from a specific device.
 
 			:param address: The I2C address of the device to read from
-			:param commandCode: The "command" or register to read from 
+			:param commandCode: The "command" or register to read from, or `None` for no command
 
 			:return: Returns the read data
 			:rtype: integer - first 8 bits contain the read data. 
@@ -165,7 +165,7 @@ class I2CDriver(object):
 			Called to read a byte (8 bits) from a specific device.
 
 			:param address: The I2C address of the device to read from
-			:param commandCode: The "command" or register to read from 
+			:param commandCode: The "command" or register to read from, or `None` for no command
 
 			:return: Returns the read data
 			:rtype: integer - first 8 bits contain the read data. 
@@ -178,7 +178,7 @@ class I2CDriver(object):
 			Called to read a block of bytesfrom a specific device.
 
 			:param address: The I2C address of the device to read from
-			:param commandCode: The "command" or register to read from
+			:param commandCode: The "command" or register to read from, or `None` for no command
 			:param nBytes: The number of bytes to read from the device
 
 			:return: Returns the read data as a list of integers.
@@ -192,7 +192,7 @@ class I2CDriver(object):
 			Called to read a block of bytesfrom a specific device.
 
 			:param address: The I2C address of the device to read from
-			:param commandCode: The "command" or register to read from
+			:param commandCode: The "command" or register to read from, or `None` for no command
 			:param nBytes: The number of bytes to read from the device
 
 			:return: Returns the read data as a list of integers.
@@ -312,6 +312,35 @@ class I2CDriver(object):
 
 		"""
 		return None
+	
+	def writeReadBlock(self, address, writeBytes, readNBytes):
+		""" 
+			Called to write a block of bytes to a device, send no stop bit, and then read a block of bytes.
+
+			:param address: The I2C address of the device to read from
+			:param writeBytes: A list of bytes (ints) to write on the I2C bus.
+			:param readNBytes: The number of bytes to read from the device
+
+			:return: A list of bytes read from the device.
+			:rtype: list
+
+		"""
+		return None
+	
+	def write_read_block(self, address, writeBytes, readNBytes):
+		""" 
+			Called to write a block of bytes to a device, send no stop bit, and then read a block of bytes.
+
+			:param address: The I2C address of the device to read from
+			:param writeBytes: A list of bytes (ints) to write on the I2C bus.
+			:param readNBytes: The number of bytes to read from the device
+
+			:return: A list of bytes read from the device.
+			:rtype: list
+
+		"""
+		return None
+
 
 	def isDeviceConnected(self, devAddress):
 		"""

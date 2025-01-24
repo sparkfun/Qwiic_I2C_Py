@@ -162,7 +162,10 @@ class CircuitPythonI2C(I2CDriver):
 		buffer = bytearray(2)
 
 		try:
-			self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+			if (commandCode == None):
+				self._i2cbus.readfrom_into(address, buffer)
+			else:
+				self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
 		except Exception as e:
 			self._i2cbus.unlock()
 			raise e
@@ -176,14 +179,17 @@ class CircuitPythonI2C(I2CDriver):
 		return self.readWord(address, commandCode)
 
 	#----------------------------------------------------------
-	def readByte(self, address, commandCode):
+	def readByte(self, address, commandCode = None):
 		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
 
 		buffer = bytearray(1)
 
 		try:
-			self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+			if (commandCode == None):
+				self._i2cbus.readfrom_into(address, buffer)
+			else:
+				self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
 		except Exception as e:
 			self._i2cbus.unlock()
 			raise e
@@ -203,7 +209,10 @@ class CircuitPythonI2C(I2CDriver):
 		buffer = bytearray(nBytes)
 
 		try:
-			self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
+			if (commandCode == None):
+				self._i2cbus.readfrom_into(address, buffer)
+			else:
+				self._i2cbus.writeto_then_readfrom(address, bytes([commandCode]), buffer)
 		except Exception as e:
 			self._i2cbus.unlock()
 			raise e
@@ -290,6 +299,26 @@ class CircuitPythonI2C(I2CDriver):
 	def write_block(self, address, commandCode, value):
 		return self.writeBlock(address, commandCode, value)
 
+	def writeReadBlock(self, address, writeBytes, readNBytes):
+		read_buffer = bytearray(readNBytes)
+
+		if not self._i2cbus.try_lock():
+			raise Exception("Unable to lock I2C bus")
+		
+		try:
+			self._i2cbus.writeto_then_readfrom(address, bytes(writeBytes), read_buffer)
+		except Exception as e:
+			self._i2cbus.unlock()
+			raise e
+		else:
+			self._i2cbus.unlock()
+
+		return list(read_buffer)
+		
+	
+	def write_read_block(self, address, writeBytes, readNBytes):
+		return self.writeReadBlock(address, writeBytes, readNBytes)
+
 	def isDeviceConnected(self, devAddress):
 		if not self._i2cbus.try_lock():
 			raise Exception("Unable to lock I2C bus")
@@ -332,3 +361,4 @@ class CircuitPythonI2C(I2CDriver):
 			self._i2cbus.unlock()
 		
 		return devices
+	

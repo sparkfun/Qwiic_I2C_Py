@@ -117,19 +117,29 @@ class MicroPythonI2C(I2CDriver):
 
 	# read commands ----------------------------------------------------------
 	def readWord(self, address, commandCode):
-		buffer = self._i2cbus.readfrom_mem(address, commandCode, 2)
+		if (commandCode == None):
+			buffer = self._i2cbus.readfrom(address, 2)
+		else:
+			buffer = self._i2cbus.readfrom_mem(address, commandCode, 2)
+
 		return (buffer[1] << 8 ) | buffer[0]
 
 	def read_word(self, address, commandCode):
 		return self.readWord(address, commandCode)
 
-	def readByte(self, address, commandCode):
+	def readByte(self, address, commandCode = None):
+		if (commandCode == None):
+			return self._i2cbus.readfrom(address, 1)[0]
+
 		return self._i2cbus.readfrom_mem(address, commandCode, 1)[0]
 
 	def read_byte(self, address, commandCode = None):
 		return self.readByte(address, commandCode)
 
 	def readBlock(self, address, commandCode, nBytes):
+		if (commandCode == None):
+			return self._i2cbus.readfrom(address, nBytes)
+
 		return self._i2cbus.readfrom_mem(address, commandCode, nBytes)
 
 	def read_block(self, address, commandCode, nBytes):
@@ -159,6 +169,14 @@ class MicroPythonI2C(I2CDriver):
 
 	def write_block(self, address, commandCode, value):
 		return self.writeBlock(address, commandCode, value)
+
+	def writeReadBlock(self, address, writeBytes, readNBytes):
+		# micropython I2C doesn't have a corresponding "i2c_rdwr" function like smbus2, so we will make our own by passing stop=False to not send stop bits between repeated transfers
+		self._i2cbus.writeto(address, bytes(writeBytes), False)
+		return self._i2cbus.readfrom(address, readNBytes)
+	
+	def write_read_block(self, address, writeBytes, readNBytes):
+		return self.writeReadBlock(address, writeBytes, readNBytes)
 
 	def isDeviceConnected(self, devAddress):
 		isConnected = False
