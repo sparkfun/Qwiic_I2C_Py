@@ -156,8 +156,7 @@ class LinuxI2C(I2CDriver):
 	def _read_no_command(self, address, nBytes):
 		data = [0] * nBytes
 		for i in range(nBytes):
-			data = self._i2cbus.read_byte(address)
-			data[i] = data
+			data[i] = self._i2cbus.read_byte(address)
 		return data
 
 	def readWord(self, address, commandCode):
