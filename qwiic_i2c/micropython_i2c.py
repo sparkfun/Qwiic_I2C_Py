@@ -40,19 +40,27 @@ import sys
 _PLATFORM_NAME = "MicroPython"
 
 # used internally in this file to get i2c class object 
-def _connectToI2CBus(sda=18, scl=19, freq=100000, *args, **argk):
+def _connectToI2CBus(sda=None, scl=None, freq=None, *args, **argk):
 	try:
 		from machine import I2C, Pin
 		if sys.platform == 'rp2':
-			# I2C busses follow every other pair of pins
-			scl_id = (scl // 2) % 2
-			sda_id = (sda // 2) % 2
-			# Check if both pins are on the same bus
-			if scl_id != sda_id:
-				raise Exception("I2C SCL and SDA pins must be on same ports")
-			return I2C(id=scl_id, scl=Pin(scl), sda=Pin(sda), freq=freq)
+			if sda is not None and scl is not None and freq is not None:
+				# I2C busses follow every other pair of pins
+				scl_id = (scl // 2) % 2
+				sda_id = (sda // 2) % 2
+				# Check if both pins are on the same bus
+				if scl_id != sda_id:
+					raise Exception("I2C SCL and SDA pins must be on same ports")
+				return I2C(id=scl_id, scl=Pin(scl), sda=Pin(sda), freq=freq)
+			else:
+				return I2C()
 		elif 'xbee' in sys.platform:
 			return I2C(id=1, freq=freq)
+		elif 'esp32' in sys.platform:
+			if sda is not None and scl is not None and freq is not None:
+				return I2C(scl=Pin(scl), sda=Pin(sda), freq=freq)
+			else:
+				return I2C()
 		else:
 			raise Exception("Unknown MicroPython platform: " + sys.platform)
 	except Exception as e:
@@ -69,7 +77,7 @@ class MicroPythonI2C(I2CDriver):
 	name = _PLATFORM_NAME
 	_i2cbus = None
 
-	def __init__(self, sda=18, scl=19, freq=100000, *args, **argk):
+	def __init__(self, sda=None, scl=None, freq=None, *args, **argk):
 		I2CDriver.__init__(self) # init super
 
 		self._sda = sda
