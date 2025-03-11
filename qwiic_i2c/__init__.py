@@ -68,7 +68,7 @@ from .i2c_driver import I2CDriver
 # All supported platform module and class names
 _supported_platforms = {
 	"linux_i2c": "LinuxI2C",
-	"circuitpy_i2c": "CircuitPythonI2C",
+	"circuitpython_i2c": "CircuitPythonI2C",
 	"micropython_i2c": "MicroPythonI2C"
 }
 
