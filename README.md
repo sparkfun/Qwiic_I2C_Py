@@ -81,7 +81,7 @@ If not already installed, follow the [instructions here](https://docs.circuitpyt
 
 Ensure that you have the latest version of the SparkFun Qwiic CircuitPython bundle. 
 ```sh
-circup bundle-add sparkfun/Qwiic_Py
+circup bundle-add sparkfun/qwiic_py
 ```
 
 Finally, connect a device with CircuitPython installed to your computer and then install the package directly to your device with circup.
