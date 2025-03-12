@@ -3,7 +3,7 @@ requires = ["setuptools"]
 
 [project]
 name = "sparkfun_qwiic_i2c"
-version = "1.0.0"
+version = "2.0.0"
 description = "SparkFun Electronics Qwiic I2C library"
 readme = "DESCRIPTION.rst"
 
