@@ -22,7 +22,7 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 * [Installation](#installation)
 
 ### Supported Platforms
-
+See the [MicroPython Downloads Page](https://micropython.org/download/?vendor=Sparkfun) for more boards compatible with MicroPython.
 | Python | Platform | Boards |
 |--|--|--|
 | Python | Linux | [Raspberry Pi](https://www.sparkfun.com/raspberry-pi-5-8gb.html) , [NVIDIA Jetson Orin Nano](https://www.sparkfun.com/nvidia-jetson-orin-nano-developer-kit.html) via the [SparkFun Qwiic SHIM](https://www.sparkfun.com/sparkfun-qwiic-shim-for-raspberry-pi.html) |
@@ -55,17 +55,17 @@ Note - the below instructions outline installation on a Linux-based (Raspberry P
 
 First, setup a virtual environment from a specific directory using venv:
 ```sh
-python3 -m venv path/to/venv
+python3 -m venv ~/sparkfun_venv
 ```
-You can pass any path as path/to/venv, just make sure you use the same one for all future steps. For more information on venv [click here](https://docs.python.org/3/library/venv.html).
+You can pass any path instead of ~/sparkfun_venv, just make sure you use the same one for all future steps. For more information on venv [click here](https://docs.python.org/3/library/venv.html).
 
 Next, install the qwiic package with:
 ```sh
-path/to/venv/bin/pip3 install sparkfun-qwiic-i2c
+~/sparkfun_venv/bin/pip3 install sparkfun-qwiic-i2c
 ```
 Now you should be able to run any example or custom python scripts that have `import qwiic_i2c` by running e.g.:
 ```sh
-path/to/venv/bin/python3 example_script.py
+~/sparkfun_venv/bin/python3 example_script.py
 ```
 
 ### MicroPython Installation

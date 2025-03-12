@@ -4,10 +4,10 @@ requires = ["setuptools"]
 [project]
 name = "sparkfun_qwiic_i2c"
 version = "1.0.0"
-description = "SparkFun Electronics qwiic I2C library"
+description = "SparkFun Electronics Qwiic I2C library"
 readme = "DESCRIPTION.rst"
 
-authors = [{name="Sparkfun Electronics", email="info@sparkfun.com"}]
+authors = [{name="SparkFun Electronics", email="info@sparkfun.com"}]
 dependencies = ["smbus2"]
 
 classifiers=[
