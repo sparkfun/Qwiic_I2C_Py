@@ -152,13 +152,13 @@ class LinuxI2C(I2CDriver):
 	# read Data Command
 
 	# Performs a general read of <nBytes> from the device at <address> without a command/register code
-	# Linux doesn't support this directly like CircuitPython and MicroPython, so we have to read byte by byte
 	def _read_no_command(self, address, nBytes):
-		data = [0] * nBytes
-		for i in range(nBytes):
-			data = self._i2cbus.read_byte(address)
-			data[i] = data
-		return data
+		from smbus2 import i2c_msg
+
+		full_read_msg = i2c_msg.read(address, nBytes)
+		self._i2cbus.i2c_rdwr(full_read_msg)
+
+		return list(full_read_msg)
 
 	def readWord(self, address, commandCode):
 

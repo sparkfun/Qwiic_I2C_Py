@@ -1,26 +1,12 @@
-Qwiic_I2C_Py
+![Qwiic I2C Python Package](docs/images/i2c-gh-banner-py.png "qwiic IC Python Package" )
+
+Sparkfun Qwiic I2C - Python Package
 ==============
 
-<p align="center">
-   <img src="https://cdn.sparkfun.com/assets/custom_pages/2/7/2/qwiic-logo-registered.jpg"  width=200>  
-   <img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png"  width=240>   
-</p>
-<p align="center">
-	<a href="https://pypi.org/project/sparkfun-qwiic-i2c/" alt="Package">
-		<img src="https://img.shields.io/pypi/pyversions/sparkfun_qwiic_i2c.svg" /></a>
-	<a href="https://github.com/sparkfun/Qwiic_I2C_Py/issues" alt="Issues">
-		<img src="https://img.shields.io/github/issues/sparkfun/Qwiic_I2C_Py.svg" /></a>
-	<a href="https://qwiic-i2c-py.readthedocs.io/en/latest/index.html" alt="Documentation">
-		<img src="https://readthedocs.org/projects/qwiic-i2c-py/badge/?version=latest&style=flat" /></a>
-	<a href="https://github.com/sparkfun/Qwiic_Proximity_Py/blob/master/LICENSE" alt="License">
-		<img src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
-	<a href="https://twitter.com/intent/follow?screen_name=sparkfun">
-        	<img src="https://img.shields.io/twitter/follow/sparkfun.svg?style=social&logo=twitter"
-           	 alt="follow on Twitter"></a>
-	
-</p>
-
-<img src="https://cdn.sparkfun.com/assets/custom_pages/2/7/2/qwiic-products-hooked-up.jpg"  align="right" width=340>
+![PyPi Version](https://img.shields.io/pypi/v/sparkfun_qwiic_i2c)
+![GitHub issues](https://img.shields.io/github/issues/sparkfun/qwiic_i2c_py)
+![License](https://img.shields.io/github/license/sparkfun/qwiic_i2c_py)
+![X](https://img.shields.io/twitter/follow/sparkfun)
 
 Python package to support multi platform I2C bus integrations for the SparkFun [qwiic ecosystem](https://www.sparkfun.com/qwiic)
 
@@ -35,12 +21,16 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 * [Documentation](#documentation)
 * [Installation](#installation)
 
-Supported Platforms
---------------------
-The qwiic I2C Python package current supports the following platforms:
-* [Raspberry Pi](https://www.sparkfun.com/search/results?term=raspberry+pi) (Single Board Computers)
-* [NVidia Jetson Nano](https://www.sparkfun.com/products/15297)
-* [Google Coral Development Board](https://www.sparkfun.com/products/15318)
+### Supported Platforms
+See the [MicroPython Downloads Page](https://micropython.org/download/?vendor=Sparkfun) for more boards compatible with MicroPython.
+| Python | Platform | Boards |
+|--|--|--|
+| Python | Linux | [Raspberry Pi](https://www.sparkfun.com/raspberry-pi-5-8gb.html) , [NVIDIA Jetson Orin Nano](https://www.sparkfun.com/nvidia-jetson-orin-nano-developer-kit.html) via the [SparkFun Qwiic SHIM](https://www.sparkfun.com/sparkfun-qwiic-shim-for-raspberry-pi.html) |
+| MicroPython | Raspberry Pi - RP2, ESP32 | [SparkFun RP2040 Thing+](https://www.sparkfun.com/sparkfun-thing-plus-rp2040.html), [SparkFun RP2350 Thing+](https://www.sparkfun.com/sparkfun-thing-plus-rp2350.html), [SparkFun ESP32 Thing+](https://www.sparkfun.com/sparkfun-thing-plus-esp32-wroom-usb-c.html)
+|CircuitPython | Raspberry Pi - RP2, ESP32 | [SparkFun RP2040 Thing+](https://www.sparkfun.com/sparkfun-thing-plus-rp2040.html), [SparkFun RP2350 Thing+](https://www.sparkfun.com/sparkfun-thing-plus-rp2350.html), [SparkFun ESP32 Thing+](https://www.sparkfun.com/sparkfun-thing-plus-esp32-wroom-usb-c.html)
+
+> [!NOTE]
+> The listed supported platforms and boards are the primary platform targets tested. It is fully expected that this package will work across a wide variety of Python enabled systems. 
 
 Dependencies 
 ---------------
@@ -51,42 +41,57 @@ Documentation
 -------------
 The SparkFun qwiic I2C module documentation is hosted at [ReadTheDocs](https://qwiic-i2c-py.readthedocs.io/en/latest/index.html)
 
-Installation
----------------
+# Installation 
 
-### PyPi Installation
-This repository is hosted on PyPi as the [sparkfun-qwiic-i2c](https://pypi.org/project/sparkfun-qwiic-i2c/) package. On systems that support PyPi installation via pip, this library is installed using the following commands
+The first step to using this package is installing it on your system. The install method depends on the python platform. The following sections outline installation on Python, MicroPython and CircuitPython.
 
-For all users (note: the user must have sudo privileges):
+### Python 
+
+#### PyPi Installation
+
+The package is primarily installed using the `pip3` command, downloading the package from the Python Index - "PyPi". 
+
+Note - the below instructions outline installation on a Linux-based (Raspberry Pi) system.
+
+First, setup a virtual environment from a specific directory using venv:
 ```sh
-sudo pip install sparkfun-qwiic-i2c
+python3 -m venv ~/sparkfun_venv
 ```
-For the current user:
+You can pass any path instead of ~/sparkfun_venv, just make sure you use the same one for all future steps. For more information on venv [click here](https://docs.python.org/3/library/venv.html).
 
+Next, install the qwiic package with:
 ```sh
-pip install sparkfun-qwiic-i2c
+~/sparkfun_venv/bin/pip3 install sparkfun-qwiic-i2c
 ```
-## Local Installation
-To install, make sure the setuptools package is installed on the system.
-
-Direct installation at the command line:
+Now you should be able to run any example or custom python scripts that have `import qwiic_i2c` by running e.g.:
 ```sh
-python setup.py install
+~/sparkfun_venv/bin/python3 example_script.py
 ```
 
-To build a package for use with pip:
+### MicroPython Installation
+If not already installed, follow the [instructions here](https://docs.micropython.org/en/latest/reference/mpremote.html) to install mpremote on your computer.
+
+Connect a device with MicroPython installed to your computer and then install the package directly to your device with mpremote mip.
 ```sh
-python setup.py sdist
- ```
-A package file is built and placed in a subdirectory called dist. This package file can be installed using pip.
+mpremote mip install github:sparkfun/qwiic_i2c_py
+```
+
+### CircuitPython Installation
+If not already installed, follow the [instructions here](https://docs.circuitpython.org/projects/circup/en/latest/#installation) to install CircUp on your computer.
+
+Ensure that you have the latest version of the SparkFun Qwiic CircuitPython bundle. 
 ```sh
-cd dist
-pip install sparkfun_qwiic_i2c-<version>.tar.gz
+circup bundle-add sparkfun/qwiic_py
+```
+
+Finally, connect a device with CircuitPython installed to your computer and then install the package directly to your device with circup.
+```sh
+circup install --py qwiic_i2c
 ```
 
 Examples
 ---------------
-This package is used extensively by the python modules for the SparkFun qwiic ecosystem. References to the modules can be found in the [qwiic python package](https://github.com/sparkfun/Qwiic_Py/tree/main/qwiic/drivers)
+This package is used extensively by the python modules for the SparkFun qwiic ecosystem. References to the modules can be found in the [sparkfun-python github topic](https://github.com/topics/sparkfun-python) or in the [drivers directories of Qwiic Py](https://github.com/sparkfun/Qwiic_Py/tree/main/qwiic/drivers).
 
 General package use examples:
 
