@@ -44,6 +44,44 @@ import sys
 _PLATFORM_NAME = "Linux"
 
 _retry_count = 3
+
+# Supported Boards Mappings from Device Base Model Name (Or name fragment) to bus id.
+_kSupportedBoards = {
+	"Raspberry Pi": 1,
+	"Jetson Orin Nano": 7
+}
+
+_kDefaultBoard = "Raspberry Pi"
+
+#-----------------------------------------------------------------------------
+# Internal function to identify the linux board we are running on. Returns empty string on error
+def _getBoardName():
+	try:
+		with open('/proc/device-tree/model') as f:
+			return f.read()
+	except:
+		#TODO: We could also have this raise/error out here if we'd prefer
+		return ""
+
+def _get_board_name():
+	return _getBoardName()
+
+#-----------------------------------------------------------------------------
+# Internal function to identify the i2c Bus ID based on platform
+def _getI2CBusId():
+	foundBoardName = _getBoardName()
+
+	for board in _kSupportedBoards.keys():
+		if board in foundBoardName:
+			return _kSupportedBoards[board]
+
+	# TODO: we could also have this raise/error out here if we'd prefer...
+	print(f"Unable to automatically detect Linux board in i2c driver. Assuming {_kDefaultBoard}...")
+	return _kSupportedBoards[_kDefaultBoard]
+
+def _get_i2c_bus_id():
+	return _getI2CBusId()
+
 #-----------------------------------------------------------------------------
 # Internal function to connect to the systems I2C bus.
 #
@@ -108,7 +146,7 @@ class LinuxI2C(I2CDriver):
 		# proviced
 		I2CDriver.__init__(self)
 
-		self._iBus = iBus
+		self._iBus = _getI2CBusId()
 
 		self._i2cbus = _connectToI2CBus(self._iBus)
 
@@ -279,7 +317,12 @@ class LinuxI2C(I2CDriver):
 		try:
 			# Try to write nothing to the device
 			# If it throws an I/O error - the device isn't connected
-			self._i2cbus.write_quick(devAddress)
+
+			if "Jetson Orin Nano" in _get_board_name():
+				self._i2cbus.read_byte(devAddress)
+			else:
+				self._i2cbus.write_quick(devAddress)
+
 			isConnected = True
 		except:
 			pass
