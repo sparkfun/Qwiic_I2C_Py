@@ -55,7 +55,7 @@ _kDefaultBoard = "Raspberry Pi"
 
 #-----------------------------------------------------------------------------
 # Internal function to identify the linux board we are running on. Returns empty string on error
-def _getBoardName():
+def _get_board_name():
 	try:
 		with open('/proc/device-tree/model') as f:
 			return f.read()
@@ -63,13 +63,10 @@ def _getBoardName():
 		#TODO: We could also have this raise/error out here if we'd prefer
 		return ""
 
-def _get_board_name():
-	return _getBoardName()
-
 #-----------------------------------------------------------------------------
 # Internal function to identify the i2c Bus ID based on platform
-def _getI2CBusId():
-	foundBoardName = _getBoardName()
+def _get_i2c_bus_id():
+	foundBoardName = _get_board_name()
 
 	for board in _kSupportedBoards.keys():
 		if board in foundBoardName:
@@ -78,9 +75,6 @@ def _getI2CBusId():
 	# TODO: we could also have this raise/error out here if we'd prefer...
 	print(f"Unable to automatically detect Linux board in i2c driver. Assuming {_kDefaultBoard}...")
 	return _kSupportedBoards[_kDefaultBoard]
-
-def _get_i2c_bus_id():
-	return _getI2CBusId()
 
 #-----------------------------------------------------------------------------
 # Internal function to connect to the systems I2C bus.
@@ -146,7 +140,7 @@ class LinuxI2C(I2CDriver):
 		# proviced
 		I2CDriver.__init__(self)
 
-		self._iBus = _getI2CBusId()
+		self._iBus = _get_i2c_bus_id()
 
 		self._i2cbus = _connectToI2CBus(self._iBus)
 
