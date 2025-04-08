@@ -330,7 +330,14 @@ class CircuitPythonI2C(I2CDriver):
 			self._i2cbus.writeto(devAddress, bytearray())
 			isConnected = True
 		except:
-			pass
+				try:
+					# Some platforms (e.g. ESP32) don't like writing an empty bytearray
+					# So we will try another connection test as well:
+					buff = bytearray(1)
+					self._i2cbus.readfrom_into(devAddress, buff)
+					isConnected = True
+				except:
+					pass
 		finally:
 			self._i2cbus.unlock()
 
