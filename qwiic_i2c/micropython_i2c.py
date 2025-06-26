@@ -60,7 +60,7 @@ def _connectToI2CBus(sda=None, scl=None, freq=100000, *args, **argk):
 			if sda is not None and scl is not None:
 				return I2C(scl=Pin(scl), sda=Pin(sda), freq=freq)
 			else:
-				return I2C()
+				raise Exception("Arduino Nano requires pin numbers for sda and scl")
 		elif 'mimxrt' in sys.platform:
 			# Default freq for mimxrt (400k) is too fast for some devices, so we pass freq in
 			return I2C(id=0, freq=freq) # TODO: We can remove the id=0 argument once the MicroPython PR #16956 is merged
