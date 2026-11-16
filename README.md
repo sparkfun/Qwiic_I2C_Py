@@ -108,6 +108,20 @@ my_bus = qwiic_i2c.get_i2c_driver(iBus = 1)
 # MicroPython and CircuitPython - Specify SDA and SCL pins, and frequency
 my_bus = qwiic_i2c.get_i2c_driver(sda=0, scl=1, freq=100000)
 
+# Any platform - Use an I2C bus object you have already created
+# MicroPython: machine.I2C or machine.SoftI2C
+import machine
+my_bus = qwiic_i2c.get_i2c_driver(machine.SoftI2C(sda=machine.Pin(0), scl=machine.Pin(1)))
+# CircuitPython: busio.I2C, bitbangio.I2C, or board.I2C()
+import board
+my_bus = qwiic_i2c.get_i2c_driver(board.I2C())
+# Linux: smbus2.SMBus
+import smbus2
+my_bus = qwiic_i2c.get_i2c_driver(smbus2.SMBus(1))
+
+# The resulting bus can be passed to any qwiic device driver
+# my_device = qwiic_device.QwiicDevice(i2c_driver=my_bus)
+
 # Perform scan of I2C bus
 scan_list = my_bus.scan()
 print("Bus scan:", scan_list)

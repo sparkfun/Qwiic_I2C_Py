@@ -96,6 +96,20 @@ def getI2CDriver(*args, **argk):
 
 		Returns the qwiic I2C driver object for current platform.
 
+		The first argument can be any of the following:
+
+		- Nothing or None: returns the default I2C driver for this platform
+		- A qwiic I2C driver object: returned unchanged
+		- A native I2C bus object for this platform (machine.I2C or
+		  machine.SoftI2C on MicroPython, busio.I2C on CircuitPython,
+		  smbus2.SMBus on Linux): returns a qwiic I2C driver that uses it
+		- Otherwise, all arguments are passed to the platform driver to create
+		  a new bus (eg. sda and scl pins, or iBus on Linux)
+
+		This means device drivers can pass their i2c_driver argument straight
+		through, whether the user provided nothing, a qwiic I2C driver, or a
+		native I2C bus object.
+
 		:return: A qwiic I2C driver object for the current platform.
 		:rtype: object
 
@@ -104,26 +118,43 @@ def getI2CDriver(*args, **argk):
 		>>> import qwiic_i2c
 		>>> i2cDriver = qwiic_i2c.getI2CDriver()
 		>>> myData = i2cDriver.readByte(0x73, 0x34)
+
+		>>> import machine
+		>>> i2cDriver = qwiic_i2c.getI2CDriver(machine.SoftI2C(sda=machine.Pin(0), scl=machine.Pin(1)))
 	"""
+	global _default_driver
+
+	# Treat a single None argument the same as no arguments, so device drivers
+	# can pass their i2c_driver argument straight through
+	if len(args) == 1 and args[0] is None and len(argk) == 0:
+		args = ()
+
+	# If a qwiic I2C driver is provided, there's nothing to do
+	if len(args) == 1 and isinstance(args[0], I2CDriver) and len(argk) == 0:
+		return args[0]
 
 	# If no parameters are provided, return the default driver if we have it
-	global _default_driver
-	if len(argk) == 0 and _default_driver != None:
+	no_params = len(args) == 0 and len(argk) == 0
+	if no_params and _default_driver != None:
 		return _default_driver
-	
+
 	# Loop through all the drivers to find the one for this platform
 	for driverClass in _drivers:
 		if driverClass.isPlatform():
-			# Found it!
-			driver = driverClass(*args, **argk)
+			# Found it! If a native I2C bus object was provided, wrap it,
+			# otherwise create a new bus with the provided parameters
+			if len(args) > 0 and driverClass.is_native_bus(args[0]):
+				driver = driverClass(*args[1:], i2c_bus=args[0], **argk)
+			else:
+				driver = driverClass(*args, **argk)
 
 			# If no parameters are provided, set this as the default driver
-			if len(argk) == 0:
+			if no_params:
 				_default_driver = driver
-			
+
 			# And return it
 			return driver
-	
+
 	# If we get here, we didn't find a driver for this platform
 	return None
 

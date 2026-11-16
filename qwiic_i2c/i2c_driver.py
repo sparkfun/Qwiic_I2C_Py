@@ -106,8 +106,27 @@ class I2CDriver(object):
 		"""
 		pass
 
-	#-------------------------------------------------------------------------	
-	# stubs to support Python with statements. 
+	@classmethod
+	def is_native_bus(cls, obj):
+		"""
+			Called to determine if an object is an I2C bus object native to
+			this platform (eg. machine.I2C on MicroPython, busio.I2C on
+			CircuitPython, smbus2.SMBus on Linux) that this driver can wrap.
+
+			:param obj: The object to check
+
+			:return: True if this driver can wrap the object, otherwise False
+			:rtype: bool
+
+		"""
+		return False
+
+	@classmethod
+	def isNativeBus(cls, obj):
+		return cls.is_native_bus(obj)
+
+	#-------------------------------------------------------------------------
+	# stubs to support Python with statements.
 	#
 	# Helpful for I2C interactions that require a mutex.
 

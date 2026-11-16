@@ -80,14 +80,19 @@ class MicroPythonI2C(I2CDriver):
 	name = _PLATFORM_NAME
 	_i2cbus = None
 
-	def __init__(self, sda=None, scl=None, freq=100000, *args, **argk):
+	def __init__(self, sda=None, scl=None, freq=100000, i2c_bus=None, *args, **argk):
 		I2CDriver.__init__(self) # init super
 
 		self._sda = sda
 		self._scl = scl
 		self._freq = freq
 
-		self._i2cbus = _connectToI2CBus(sda=self._sda, scl=self._scl, freq=self._freq)
+		# Use the provided machine.I2C or machine.SoftI2C object if given,
+		# otherwise create one
+		if i2c_bus is not None:
+			self._i2cbus = i2c_bus
+		else:
+			self._i2cbus = _connectToI2CBus(sda=self._sda, scl=self._scl, freq=self._freq)
 
 	@classmethod
 	def isPlatform(cls):
@@ -99,6 +104,15 @@ class MicroPythonI2C(I2CDriver):
 	@classmethod
 	def is_platform(cls):
 		return cls.isPlatform()
+
+	@classmethod
+	def is_native_bus(cls, obj):
+		# Duck typed so that machine.I2C, machine.SoftI2C, and any other object
+		# with the same interface are all accepted
+		for method in ("scan", "readfrom", "writeto", "readfrom_mem", "writeto_mem"):
+			if not hasattr(obj, method):
+				return False
+		return True
 
 #-------------------------------------------------------------------------		
 	# General get attribute method

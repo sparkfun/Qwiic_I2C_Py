@@ -102,9 +102,9 @@ class CircuitPythonI2C(I2CDriver):
 
 	_i2cbus = None
 
-	def __init__(self, sda=None, scl=None, freq=100000, *args, **argk):
+	def __init__(self, sda=None, scl=None, freq=100000, i2c_bus=None, *args, **argk):
 
-		# Call the super class. The super calss will use default values if not 
+		# Call the super class. The super calss will use default values if not
 		# proviced
 		I2CDriver.__init__(self)
 
@@ -112,7 +112,12 @@ class CircuitPythonI2C(I2CDriver):
 		self._scl = scl
 		self._freq = freq
 
-		self._i2cbus = _connectToI2CBus(sda=self._sda, scl=self._scl, freq=self._freq)
+		# Use the provided busio.I2C (or compatible) object if given, otherwise
+		# create one
+		if i2c_bus is not None:
+			self._i2cbus = i2c_bus
+		else:
+			self._i2cbus = _connectToI2CBus(sda=self._sda, scl=self._scl, freq=self._freq)
 
 	# Okay, are we running on a circuit py system?
 	@classmethod
@@ -125,6 +130,16 @@ class CircuitPythonI2C(I2CDriver):
 	@classmethod
 	def is_platform(cls):
 		return cls.isPlatform()
+
+	@classmethod
+	def is_native_bus(cls, obj):
+		# Duck typed so that busio.I2C, bitbangio.I2C, board.I2C(), and any other
+		# object with the same interface are all accepted. Checking methods also
+		# keeps board pins (eg. board.SDA) from being mistaken for a bus
+		for method in ("try_lock", "unlock", "scan", "writeto", "readfrom_into", "writeto_then_readfrom"):
+			if not hasattr(obj, method):
+				return False
+		return True
 
 #-------------------------------------------------------------------------		
 	# General get attribute method

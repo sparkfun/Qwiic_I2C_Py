@@ -134,15 +134,20 @@ class LinuxI2C(I2CDriver):
 	_i2cbus = None
 	_i2c_msg = None
 
-	def __init__(self, iBus=1, *args, **argk):
+	def __init__(self, iBus=1, i2c_bus=None, *args, **argk):
 
-		# Call the super class. The super calss will use default values if not 
+		# Call the super class. The super calss will use default values if not
 		# proviced
 		I2CDriver.__init__(self)
 
-		self._iBus = _get_i2c_bus_id()
-
-		self._i2cbus = _connectToI2CBus(self._iBus)
+		# Use the provided smbus2.SMBus (or compatible) object if given,
+		# otherwise create one
+		if i2c_bus is not None:
+			self._iBus = None
+			self._i2cbus = i2c_bus
+		else:
+			self._iBus = _get_i2c_bus_id()
+			self._i2cbus = _connectToI2CBus(self._iBus)
 
 	# Okay, are we running on a Linux system?
 	@classmethod
@@ -153,6 +158,16 @@ class LinuxI2C(I2CDriver):
 	@classmethod
 	def is_platform(cls):
 		return cls.isPlatform()
+
+	@classmethod
+	def is_native_bus(cls, obj):
+		# Duck typed so that smbus2.SMBus and any other object with the same
+		# interface are accepted. i2c_rdwr is required for reads without a
+		# command code, so the original smbus module is not supported
+		for method in ("read_byte", "read_byte_data", "write_byte_data", "read_i2c_block_data", "write_i2c_block_data", "i2c_rdwr"):
+			if not hasattr(obj, method):
+				return False
+		return True
 
 #-------------------------------------------------------------------------		
 	# General get attribute method
