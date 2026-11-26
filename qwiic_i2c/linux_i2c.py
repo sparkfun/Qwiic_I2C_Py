@@ -134,13 +134,13 @@ class LinuxI2C(I2CDriver):
 	_i2cbus = None
 	_i2c_msg = None
 
-	def __init__(self, iBus=1, *args, **argk):
+	def __init__(self, iBus=None, *args, **argk):
 
 		# Call the super class. The super calss will use default values if not 
 		# proviced
 		I2CDriver.__init__(self)
 
-		self._iBus = _get_i2c_bus_id()
+		self._iBus = _get_i2c_bus_id() if iBus is None else iBus
 
 		self._i2cbus = _connectToI2CBus(self._iBus)
 
